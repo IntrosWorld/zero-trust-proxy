@@ -129,11 +129,21 @@ def test_connection_limits(tmp_path):
 
 
 def test_reload_and_logs(tmp_path):
-    with backend(tmp_path) as port, Proxy(tmp_path,port) as p:
-        # Accepted connections retain their immutable configuration snapshot.
+    with backend(tmp_path) as port, Proxy(tmp_path,port,header_timeout_ms=5000) as p:
+        def accepted():
+            return int(p.admin_get().split(b'\nzt_connections_total ')[1].splitlines()[0])
+        def wait_accepted(minimum):
+            deadline=time.monotonic()+3
+            while accepted()<minimum:
+                assert time.monotonic()<deadline,'worker did not accept the connection'
+                time.sleep(.01)
+        wait_accepted(1) # The readiness connection must have been accepted first.
+        before=accepted()
+        # Wait for actual accept, not just the client-side TCP handshake. Valgrind
+        # can delay accept beyond a fixed sleep; snapshots are taken at accept.
         with p.connect() as old:
             old.sendall(b'GET ')
-            time.sleep(.05)
+            wait_accepted(before+1)
             p.reload(denylist=['allowed.test'])
             old.sendall(request(port=port)[4:])
             assert receive_all(old).endswith(b'local backend ok\n')
