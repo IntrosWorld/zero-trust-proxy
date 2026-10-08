@@ -292,3 +292,34 @@ def test_header_bomb_and_bad_chunks(tmp_path):
         assert b'431' in p.request(request(port=port,extra='X: '+('a'*16384)+'\r\n'))
         assert b'400' in p.request(request(port=port,method='POST',extra='Transfer-Encoding: chunked\r\n',body=b'Z\r\n'))
         assert b'400' in p.request(request(port=port,extra='Connection: transfer-encoding\r\n'))
+
+
+def test_system_dns_and_address_fallback(tmp_path):
+    with backend(tmp_path) as port, Proxy(tmp_path,port,allowlist=['localhost'],http_allowlist=['localhost'],test_dns={},test_private_hosts=['localhost']) as p:
+        assert p.request(request('localhost',port)).endswith(b'local backend ok\n')
+    assert any(r['resolved_ip']=='127.0.0.1' and r['decision']=='allow' for r in p.records())
+
+
+def test_tls_without_sni(tmp_path):
+    with backend(tmp_path,tls=True) as port, Proxy(tmp_path,port) as p:
+        with tls_context().wrap_socket(tunnel(p,port),server_hostname=None) as s:
+            s.sendall(b'GET / HTTP/1.1\r\nHost: allowed.test\r\nConnection: close\r\n\r\n')
+            assert receive_all(s).endswith(b'local backend ok\n')
+
+
+def test_nonloopback_auth(tmp_path):
+    with Proxy(tmp_path,12345,listen='0.0.0.0',require_auth=True,tokens=['correct'],test_mode=False,test_dns={},test_private_hosts=[]) as p:
+        assert b'407' in p.request(request('evil.test',443,'CONNECT'))
+        assert b'not-allowlisted' in p.request(request('evil.test',443,'CONNECT',extra='Proxy-Authorization: Bearer correct\r\n'))
+
+
+def test_config_json_validation(tmp_path):
+    path=tmp_path/'json.json'
+    invalid=['{"rate": 1e}', '{"port": 3128, "port": 3129}', '{"log_path": "\\ud800"}', '{"log_path": "bad\\u0000path"}', '{"allowlist":["bad..host"]}', '{"tokens":["bad\\u0000token"]}', '{"workers": null}', '{"workers": 1.5}']
+    for data in invalid:
+        path.write_text(data)
+        result=subprocess.run([str(BINARY),'--config',str(path),'--check-config'],capture_output=True)
+        assert result.returncode!=0,data
+    path.write_text('{"rate":1e2,"log_path":"\\u03b1\\ud83d\\ude80.jsonl","allowlist":["EXAMPLE.COM"]}')
+    result=subprocess.run([str(BINARY),'--config',str(path),'--check-config'],capture_output=True)
+    assert result.returncode==0,result.stderr

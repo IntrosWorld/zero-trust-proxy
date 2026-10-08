@@ -1,5 +1,8 @@
 #include "config/config.h"
+#include "http/request_parser.h"
 #include "net/addr.h"
+#include "policy/host.h"
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <set>
@@ -32,6 +35,50 @@ class Reader {
       throw std::runtime_error("truncated JSON");
     return s[p++];
   }
+  unsigned hex4() {
+    unsigned value = 0;
+    for (int i = 0; i < 4; ++i) {
+      char c = get();
+      unsigned digit;
+      if (c >= '0' && c <= '9')
+        digit = c - '0';
+      else if (c >= 'a' && c <= 'f')
+        digit = c - 'a' + 10;
+      else if (c >= 'A' && c <= 'F')
+        digit = c - 'A' + 10;
+      else
+        throw std::runtime_error("invalid JSON unicode escape");
+      value = (value << 4) | digit;
+    }
+    return value;
+  }
+  void unicode(std::string &out) {
+    unsigned cp = hex4();
+    if (cp >= 0xd800 && cp <= 0xdbff) {
+      if (get() != '\\' || get() != 'u')
+        throw std::runtime_error("missing low surrogate");
+      unsigned lo = hex4();
+      if (lo < 0xdc00 || lo > 0xdfff)
+        throw std::runtime_error("invalid low surrogate");
+      cp = 0x10000 + ((cp - 0xd800) << 10) + lo - 0xdc00;
+    } else if (cp >= 0xdc00 && cp <= 0xdfff)
+      throw std::runtime_error("unpaired low surrogate");
+    if (cp < 0x80)
+      out += static_cast<char>(cp);
+    else if (cp < 0x800) {
+      out += static_cast<char>(0xc0 | (cp >> 6));
+      out += static_cast<char>(0x80 | (cp & 63));
+    } else if (cp < 0x10000) {
+      out += static_cast<char>(0xe0 | (cp >> 12));
+      out += static_cast<char>(0x80 | ((cp >> 6) & 63));
+      out += static_cast<char>(0x80 | (cp & 63));
+    } else {
+      out += static_cast<char>(0xf0 | (cp >> 18));
+      out += static_cast<char>(0x80 | ((cp >> 12) & 63));
+      out += static_cast<char>(0x80 | ((cp >> 6) & 63));
+      out += static_cast<char>(0x80 | (cp & 63));
+    }
+  }
   std::string string() {
     if (get() != '"')
       throw std::runtime_error("expected JSON string");
@@ -54,10 +101,12 @@ class Reader {
           out += '\b';
         else if (c == 'f')
           out += '\f';
+        else if (c == 'u')
+          unicode(out);
         else if (c == '"' || c == '\\' || c == '/')
           out += c;
         else
-          throw std::runtime_error("use ASCII / punycode strings, unicode escapes unsupported");
+          throw std::runtime_error("invalid JSON escape");
       } else
         out += c;
     }
@@ -106,6 +155,10 @@ class Reader {
         p += std::char_traits<char>::length(literal);
         return Json{v};
       }
+    if (s.compare(p, 4, "null") == 0) {
+      p += 4;
+      return Json{nullptr};
+    }
     size_t start = p;
     if (s[p] == '-')
       ++p;
@@ -123,6 +176,16 @@ class Reader {
         ++p;
       if (p == begin)
         throw std::runtime_error("invalid fraction");
+    }
+    if (p < s.size() && (s[p] == 'e' || s[p] == 'E')) {
+      ++p;
+      if (p < s.size() && (s[p] == '+' || s[p] == '-'))
+        ++p;
+      size_t begin = p;
+      while (p < s.size() && s[p] >= '0' && s[p] <= '9')
+        ++p;
+      if (p == begin)
+        throw std::runtime_error("invalid exponent");
     }
     double n = std::stod(s.substr(start, p - start));
     if (!std::isfinite(n))
@@ -162,6 +225,8 @@ std::shared_ptr<const Config> load_config(const std::string &path, bool allow_te
     known.insert(k);
     if (auto j = take(k))
       out = j->as<std::string>();
+    if (out.empty() || out.find('\0') != out.npos)
+      throw std::runtime_error("empty or NUL configuration string");
   };
   auto integer = [&](const char *k, int &out, int lo, int hi) {
     known.insert(k);
@@ -242,6 +307,14 @@ std::shared_ptr<const Config> load_config(const std::string &path, bool allow_te
     if (!known.contains(key))
       throw std::runtime_error("unknown config key: " + key);
   }
+  for (auto *list : {&c->allowlist, &c->denylist, &c->http_allowlist, &c->test_private_hosts}) {
+    for (auto &host : *list) {
+      host = lower(host);
+      auto value = host.starts_with("*.") ? host.substr(2) : host;
+      if (!valid_host(value) && !ip_literal(value))
+        throw std::runtime_error("invalid host pattern: " + host);
+    }
+  }
   auto bind = Address::parse(c->listen, c->port);
   auto admin = Address::parse(c->admin, c->admin_port);
   if (!admin.loopback())
@@ -251,7 +324,8 @@ std::shared_ptr<const Config> load_config(const std::string &path, bool allow_te
   if (c->require_auth && c->tokens.empty())
     throw std::runtime_error("authentication requires tokens");
   for (const auto &t : c->tokens)
-    if (t.empty() || t.size() > 1024 || t.find_first_of("\r\n\t ") != t.npos)
+    if (t.empty() || t.size() > 1024 ||
+        std::any_of(t.begin(), t.end(), [](unsigned char ch) { return ch < 33 || ch > 126; }))
       throw std::runtime_error("invalid auth token");
   if (c->test_mode && (!allow_test || !bind.loopback()))
     throw std::runtime_error("test_mode requires --allow-test-config and loopback listener");
