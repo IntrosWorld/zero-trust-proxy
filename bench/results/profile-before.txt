@@ -1,0 +1,27 @@
+--------------------------------------------------------------------------------
+Profile data file 'bench/results/callgrind-before.out' (creator: callgrind-3.18.1)
+--------------------------------------------------------------------------------
+I1 cache: 
+D1 cache: 
+LL cache: 
+Timerange: Basic block 0 - 34001592
+Trigger: Program termination
+Profiled target:  build/release/body_bench 128 (PID 33359, part 1)
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Thresholds:       95
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                  
+--------------------------------------------------------------------------------
+94,708,115 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                   file:function
+--------------------------------------------------------------------------------
+92,278,790 (97.43%)  ???:zt::BodyFramer::consume(std::basic_string_view<char, std::char_traits<char> >) [/home/mohit/projects/zt-proxy/build/release/body_bench]
+

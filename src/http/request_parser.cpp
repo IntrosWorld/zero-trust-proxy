@@ -226,6 +226,16 @@ BodyFramer::BodyFramer(const Request &r) : left_(r.content_length), chunked_(r.c
     state_ = left_ ? State::data : State::done;
 }
 bool BodyFramer::consume(std::string_view bytes) {
+  // Content-Length bodies are opaque bytes. Validate the length once per block;
+  // scanning payload bytes adds work without improving framing validation.
+  if (!chunked_) {
+    if (bytes.size() > left_)
+      return false;
+    left_ -= bytes.size();
+    if (left_ == 0)
+      state_ = State::done;
+    return true;
+  }
   for (unsigned char ch : bytes) {
     if (state_ == State::done)
       return false;

@@ -11,7 +11,9 @@
 namespace zt {
 namespace {
 constexpr uint64_t LISTENER = 1, TIMER = 2, WAKEUP = 3;
-constexpr uint32_t EDGE = EPOLLET | EPOLLONESHOT | EPOLLRDHUP;
+// EPOLLIN also signals readable EOF. Do not subscribe to persistent RDHUP
+// while a half-closed socket is armed only for a blocked write.
+constexpr uint32_t EDGE = EPOLLET | EPOLLONESHOT;
 double elapsed(Clock::time_point from) {
   return std::chrono::duration<double>(Clock::now() - from).count();
 }
@@ -358,7 +360,7 @@ void Worker::arm(Connection &c) {
   if (!c.client_eof && (c.state == State::headers || c.state == State::hello ||
                         (c.state == State::relay && c.up.empty() && (!c.body || !c.body->done()))))
     client |= EPOLLIN;
-  // Do not rearm RDHUP-only fds: a persistent FIN would busy-spin while DNS runs.
+  // Leave inactive one-shot descriptors disarmed until their state changes.
   if (client & (EPOLLIN | EPOLLOUT))
     loop_.modify(c.client.get(), c.id * 2, client);
   if (c.upstream) {
