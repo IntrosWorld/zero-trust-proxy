@@ -8,15 +8,36 @@
 #include <thread>
 #include <vector>
 namespace zt {
-struct DnsResult { uint64_t id; std::vector<Address> addresses; double seconds=0; };
-struct Mailbox { Fd wakeup; std::mutex mutex; std::deque<DnsResult> results; Mailbox(); };
+struct DnsResult {
+  uint64_t id;
+  std::vector<Address> addresses;
+  double seconds = 0;
+};
+struct Mailbox {
+  Fd wakeup;
+  std::mutex mutex;
+  std::deque<DnsResult> results;
+  Mailbox();
+};
 class Resolver {
-  struct Job { uint64_t id; std::string host; int port; std::shared_ptr<const Config> config; std::weak_ptr<Mailbox> box; };
-  std::mutex mutex_; std::condition_variable cv_; std::deque<Job> jobs_; std::vector<std::thread> threads_; bool stop_=false;
+  struct Job {
+    uint64_t id;
+    std::string host;
+    int port;
+    std::shared_ptr<const Config> config;
+    std::weak_ptr<Mailbox> box;
+  };
+  std::mutex mutex_;
+  std::condition_variable cv_;
+  std::deque<Job> jobs_;
+  std::vector<std::thread> threads_;
+  bool stop_ = false;
   void run();
+
 public:
   explicit Resolver(int threads);
   ~Resolver();
-  bool submit(uint64_t id,const std::string& host,int port,std::shared_ptr<const Config> config,const std::shared_ptr<Mailbox>& box);
+  bool submit(uint64_t id, const std::string &host, int port, std::shared_ptr<const Config> config,
+              const std::shared_ptr<Mailbox> &box);
 };
-}
+} // namespace zt

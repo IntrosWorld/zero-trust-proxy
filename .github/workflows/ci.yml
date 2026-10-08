@@ -1,0 +1,44 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [release, asan, tsan]
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y cmake g++ libgtest-dev python3-pytest openssl
+      - run: cmake --preset ${{ matrix.preset }} && cmake --build --preset ${{ matrix.preset }}
+      - name: Unit and integration tests
+        shell: bash
+        run: |
+          if [ '${{ matrix.preset }}' = tsan ]; then
+            setarch x86_64 -R ctest --test-dir build/tsan --output-on-failure
+            ZT_BINARY=build/tsan/zt-proxy setarch x86_64 -R python3 -m pytest tests/integration -q
+          else
+            ctest --test-dir build/${{ matrix.preset }} --output-on-failure
+            ZT_BINARY=build/${{ matrix.preset }}/zt-proxy python3 -m pytest tests/integration -q
+          fi
+  analysis:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y clang clang-tidy clang-format cmake libgtest-dev
+      - run: cmake --preset debug && cmake --build --preset debug
+      - run: python3 scripts/tidy.py
+      - run: find src tests/unit tests/fuzz -type f \( -name '*.cpp' -o -name '*.h' \) -print0 | xargs -0 clang-format --dry-run --Werror
+      - run: bash scripts/fuzz.sh 30
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-results
+          path: bench/results/fuzz-*.txt
+  container:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f deploy/Dockerfile -t zt-proxy .
+      - run: docker run --rm zt-proxy --config /etc/zt-proxy/config.json --check-config

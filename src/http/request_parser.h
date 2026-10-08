@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
-#include <vector>
 #include <utility>
+#include <vector>
 namespace zt {
 struct Request {
   std::string method, host, path, authorization;
@@ -18,6 +18,7 @@ class RequestParser {
   std::string data_;
   ParseStatus status_ = ParseStatus::need_more;
   void parse();
+
 public:
   Request request;
   int error_code = 400;
@@ -33,9 +34,12 @@ class BodyFramer {
   bool chunked_;
   std::string line_;
   size_t trailer_bytes_ = 0;
+
 public:
-  explicit BodyFramer(const Request& request);
+  explicit BodyFramer(const Request &request);
   bool consume(std::string_view bytes); // false on invalid framing or surplus bytes
-  bool done() const { return state_ == State::done; }
+  bool done() const {
+    return state_ == State::done;
+  }
 };
-}
+} // namespace zt
