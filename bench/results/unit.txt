@@ -1,0 +1,69 @@
+Running main() from ./googletest/src/gtest_main.cc
+[==========] Running 18 tests from 9 test suites.
+[----------] Global test environment set-up.
+[----------] 5 tests from Parser
+[ RUN      ] Parser.EverySplit
+[       OK ] Parser.EverySplit (0 ms)
+[ RUN      ] Parser.Bytewise
+[       OK ] Parser.Bytewise (0 ms)
+[ RUN      ] Parser.RejectsAmbiguity
+[       OK ] Parser.RejectsAmbiguity (0 ms)
+[ RUN      ] Parser.LimitsAndOrigin
+[       OK ] Parser.LimitsAndOrigin (0 ms)
+[ RUN      ] Parser.StripsHopHeaders
+[       OK ] Parser.StripsHopHeaders (0 ms)
+[----------] 5 tests from Parser (0 ms total)
+
+[----------] 2 tests from Body
+[ RUN      ] Body.ChunkedAndPipeline
+[       OK ] Body.ChunkedAndPipeline (0 ms)
+[ RUN      ] Body.Length
+[       OK ] Body.Length (0 ms)
+[----------] 2 tests from Body (0 ms total)
+
+[----------] 2 tests from Address
+[ RUN      ] Address.BlockedRanges
+[       OK ] Address.BlockedRanges (0 ms)
+[ RUN      ] Address.PublicBoundaries
+[       OK ] Address.PublicBoundaries (0 ms)
+[----------] 2 tests from Address (0 ms total)
+
+[----------] 1 test from Host
+[ RUN      ] Host.SyntaxAndWildcard
+[       OK ] Host.SyntaxAndWildcard (0 ms)
+[----------] 1 test from Host (0 ms total)
+
+[----------] 1 test from Policy
+[ RUN      ] Policy.OrderAndPrivate
+[       OK ] Policy.OrderAndPrivate (0 ms)
+[----------] 1 test from Policy (0 ms total)
+
+[----------] 1 test from Auth
+[ RUN      ] Auth.CompareAndTokens
+[       OK ] Auth.CompareAndTokens (0 ms)
+[----------] 1 test from Auth (0 ms total)
+
+[----------] 2 tests from Rate
+[ RUN      ] Rate.RefillAndClock
+[       OK ] Rate.RefillAndClock (0 ms)
+[ RUN      ] Rate.IdleCleanupPreservesSlowLimits
+[       OK ] Rate.IdleCleanupPreservesSlowLimits (0 ms)
+[----------] 2 tests from Rate (0 ms total)
+
+[----------] 1 test from Buffer
+[ RUN      ] Buffer.Compaction
+[       OK ] Buffer.Compaction (0 ms)
+[----------] 1 test from Buffer (0 ms total)
+
+[----------] 3 tests from Sni
+[ RUN      ] Sni.TruncationsAndCases
+[       OK ] Sni.TruncationsAndCases (0 ms)
+[ RUN      ] Sni.MultipleRecords
+[       OK ] Sni.MultipleRecords (0 ms)
+[ RUN      ] Sni.RecordedOpenSSL
+[       OK ] Sni.RecordedOpenSSL (0 ms)
+[----------] 3 tests from Sni (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 18 tests from 9 test suites ran. (0 ms total)
+[  PASSED  ] 18 tests.

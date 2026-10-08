@@ -1,0 +1,4 @@
+# Preserve protocol seed bytes and tool-produced output exactly.
+tests/fuzz/corpus/** -text -whitespace
+bench/results/** -whitespace
+*.bin binary

@@ -1,0 +1,36 @@
+HTTP/1.1 200 Response
+Connection: close
+Content-Type: text/plain; version=0.0.4
+Content-Length: 1158
+
+# TYPE zt_active_connections gauge
+zt_active_connections 100
+# TYPE zt_connections_total counter
+zt_connections_total 101
+# TYPE zt_bytes_up_total counter
+zt_bytes_up_total 0
+# TYPE zt_bytes_down_total counter
+zt_bytes_down_total 144
+# TYPE zt_log_drops_total counter
+zt_log_drops_total 0
+# TYPE zt_decisions_total counter
+zt_decisions_total{rule="incomplete"} 1
+# TYPE zt_requests_total counter
+# TYPE zt_request_duration_seconds histogram
+zt_request_duration_seconds_bucket{le="0.001"} 0
+zt_request_duration_seconds_bucket{le="0.005"} 0
+zt_request_duration_seconds_bucket{le="0.01"} 0
+zt_request_duration_seconds_bucket{le="0.05"} 1
+zt_request_duration_seconds_bucket{le="0.1"} 1
+zt_request_duration_seconds_bucket{le="0.5"} 1
+zt_request_duration_seconds_bucket{le="1"} 1
+zt_request_duration_seconds_bucket{le="5"} 1
+zt_request_duration_seconds_bucket{le="+Inf"} 1
+zt_request_duration_seconds_count 1
+zt_request_duration_seconds_sum 0.019213
+# TYPE zt_dns_duration_seconds summary
+zt_dns_duration_seconds_count 0
+zt_dns_duration_seconds_sum 0
+# TYPE zt_connect_duration_seconds summary
+zt_connect_duration_seconds_count 0
+zt_connect_duration_seconds_sum 0

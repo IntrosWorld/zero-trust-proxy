@@ -1,5 +1,7 @@
 # ZT-Proxy
 
+[![CI configured; hosted run pending](docs/ci.svg)](.github/workflows/ci.yml)
+
 A working Linux C++20 forward proxy with HTTP forwarding, HTTPS CONNECT tunnels, destination allowlisting, DNS-pinned SSRF protection and TLS SNI checks without decryption. Networking uses POSIX sockets and epoll directly; the executable has no third-party networking, HTTP, TLS or JSON library dependency.
 
 The project lives on the Linux ext4 filesystem at `/home/mohit/projects/zt-proxy`. The original specification is preserved in [docs/spec.md](docs/spec.md). See [checkpoints](docs/checkpoints.md) for implementation history, [architecture](docs/architecture.md) for security and concurrency details, and [interview notes](docs/interview.md) for explanations.
@@ -84,7 +86,7 @@ bash scripts/valgrind.sh
 bash scripts/fuzz.sh 30
 ```
 
-Verified locally: **17 GoogleTest cases and 41 pytest integration cases**, with the complete suite passing in release, ASan/UBSan and TSan builds. All **16 attack categories** were blocked and all **five legitimate categories** passed in the local red-team model. This is a scenario coverage result, not a universal security guarantee. Tests cover actual curl HTTP/HTTPS, 2,000 half-open sockets, another client's continued service, DNS mapping changes after pinning, chunked uploads, IPv6, matching/mismatched/no SNI, real system DNS, reload and graceful shutdown.
+Verified locally: **18 GoogleTest cases and 41 pytest integration cases**, with the complete suite passing in release, ASan/UBSan and TSan builds. All **16 attack categories** were blocked and all **five legitimate categories** passed in the local red-team model. This is a scenario coverage result, not a universal security guarantee. Tests cover actual curl HTTP/HTTPS, 2,000 half-open sockets, another client's continued service, DNS mapping changes after pinning, chunked uploads, IPv6, matching/mismatched/no SNI, real system DNS, reload and graceful shutdown.
 
 The final libFuzzer runs completed **341,762 HTTP inputs and 1,488,004 SNI inputs**, without crashes. An actual OpenSSL ClientHello is checked in as a seed and tested at every truncation. Four final Valgrind integration scenarios report **zero bytes in use at exit and zero errors**. clang-tidy passes across all 15 translation units. Raw outputs are in [bench/results](bench/results).
 
@@ -93,7 +95,24 @@ This host's TSan runtime collides with randomized mappings; `scripts/check.sh ts
 ## Measured performance
 
 <!-- BENCH_START -->
-Final measurements are generated from the saved raw wrk output.
+Intel Core Ultra 5 125H (18 logical CPUs), Ubuntu 22.04, GCC 11.4, release `-O3 -DNDEBUG`. Full hardware/kernel/tool versions and the measured binary hash are in [environment.json](bench/results/environment.json).
+
+| Clients | Direct/proxy workers | Requests/sec | p50 | p99 |
+| ---: | --- | ---: | ---: | ---: |
+| 100 | Direct | 13,655.33 | 7.21ms | 10.12ms |
+| 100 | Proxy / 1 | 9,049.71 | 10.92ms | 15.31ms |
+| 100 | Proxy / 2 | 9,274.82 | 10.60ms | 14.88ms |
+| 100 | Proxy / 4 | 10,090.71 | 9.63ms | 13.76ms |
+| 100 | Proxy / 18 | 8,791.02 | 11.14ms | 15.44ms |
+| 1,000 | Direct | 10,976.50 | 89.25ms | 103.25ms |
+| 1,000 | Proxy / 1 | 8,365.07 | 116.04ms | 132.28ms |
+| 1,000 | Proxy / 2 | 8,454.30 | 117.40ms | 134.05ms |
+| 1,000 | Proxy / 4 | 8,879.70 | 112.77ms | 134.95ms |
+| 1,000 | Proxy / 18 | 7,552.93 | 129.75ms | 156.09ms |
+
+The four-worker proxy delivered 73.9% of direct request throughput at 100 clients. More workers did not consistently help; this shared-host, single Python-backend workload is not evidence of linear proxy scaling. The 1,000-client runs show higher queuing latency. No failed runs or unfavorable worker counts were omitted.
+
+The **500 MiB TLS download** matched SHA-256 `411fd088435f42d23961db92a0c245b2f946aab0b98ab356649503680410a4dc` and measured **951.16 MiB/s** in 0.526 s, with proxy CPU at 24.7% of one core. The 1,000-idle-connection test added approximately **132.3 KiB RSS per connection**.
 <!-- BENCH_END -->
 
 ![Worker scaling](bench/results/scaling.svg)
@@ -104,7 +123,7 @@ Callgrind identified per-byte fixed-body validation as a hotspot: **97.43% of in
 
 ## Operations
 
-`GET /healthz` returns `200 ok`. `GET /metrics` provides `zt_active_connections`, connections/requests/decisions counters, wire byte counters, dropped-log counters, DNS/connect latency summaries and a connection-duration histogram. Each wrk result has a live metrics scrape and an `ss` snapshot. `ss` includes TIME_WAIT and both endpoints; compare accepted server-side ESTAB sockets with the gauge, allowing for time between samples.
+`GET /healthz` returns `200 ok`. `GET /metrics` provides `zt_active_connections`, connections/requests/decisions counters, wire byte counters, dropped-log counters, DNS/connect latency summaries and a connection-duration histogram. Each wrk result has a live metrics scrape and an `ss` snapshot. A controlled 100-client snapshot matched the gauge to exactly 100 server-side ESTAB sockets ([evidence](bench/results/observability.json)). The red-team [log samples](bench/results/redteam-log-samples.json) retain distinct outcomes per test. `ss` includes TIME_WAIT and both endpoints; compare accepted server-side ESTAB sockets with the gauge, allowing for time between samples.
 
 A blocked log record looks like this (illustrative values):
 

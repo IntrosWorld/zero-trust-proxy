@@ -1,0 +1,15 @@
+Preset CMake variables:
+
+  CMAKE_BUILD_TYPE="Debug"
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/mohit/projects/zt-proxy/build/debug
+Consolidate compiler generated dependencies of target zt_core
+[ 75%] Built target zt_core
+Consolidate compiler generated dependencies of target zt-proxy
+Consolidate compiler generated dependencies of target unit_tests
+[ 85%] Built target zt-proxy
+[100%] Built target unit_tests
+....                                                                     [100%]
+4 passed, 37 deselected in 6.01s

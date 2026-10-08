@@ -1,0 +1,15 @@
+==39494== Memcheck, a memory error detector
+==39494== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==39494== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==39494== Command: /home/mohit/projects/zt-proxy/build/debug/zt-proxy --config /tmp/pytest-of-mohit/pytest-18/test_shutdown_drains0/config.json --allow-test-config
+==39494== Parent PID: 39119
+==39494== 
+==39494== 
+==39494== HEAP SUMMARY:
+==39494==     in use at exit: 0 bytes in 0 blocks
+==39494==   total heap usage: 276 allocs, 276 frees, 384,670 bytes allocated
+==39494== 
+==39494== All heap blocks were freed -- no leaks are possible
+==39494== 
+==39494== For lists of detected and suppressed errors, rerun with: -s
+==39494== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

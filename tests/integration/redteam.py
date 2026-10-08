@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+import tempfile
 
 CASES = {
  'R1': 'test_policy_blocks[evil.test',
@@ -38,7 +39,18 @@ def main():
     output=Path(args.output)
     output.parent.mkdir(parents=True,exist_ok=True)
     xml=output.with_suffix('.xml')
-    result=subprocess.run([sys.executable,'-m','pytest','tests/integration','-q',f'--junitxml={xml}'],text=True,capture_output=True)
+    with tempfile.TemporaryDirectory(prefix='zt-redteam-') as temp:
+        result=subprocess.run([sys.executable,'-m','pytest','tests/integration','-q',f'--junitxml={xml}',f'--basetemp={temp}/tests'],text=True,capture_output=True)
+        samples={}
+        for log in sorted(Path(temp).rglob('*.jsonl')):
+            unique={}
+            for line in log.read_text().splitlines():
+                record=json.loads(line)
+                key=tuple(record.get(k) for k in ('method','host','rule_id','sni'))
+                unique.setdefault(key,record)
+            if unique:
+                samples[str(log.relative_to(Path(temp)/'tests'))]=list(unique.values())
+        output.with_name('redteam-log-samples.json').write_text(json.dumps(samples,indent=2)+'\n')
     print(result.stdout)
     output.with_suffix('.txt').write_text(result.stdout+result.stderr)
     import xml.etree.ElementTree as ET

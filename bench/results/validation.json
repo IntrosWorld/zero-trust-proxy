@@ -1,0 +1,180 @@
+{
+  "source_commit": "b4b4648655268c2251ac050757774fabfcf81fc8",
+  "unit_tests": 18,
+  "integration_tests": {
+    "release": 41,
+    "asan_ubsan": 41,
+    "tsan": 41
+  },
+  "redteam": {
+    "timestamp": 1791427579.9782133,
+    "categories": {
+      "R1": {
+        "passed": true,
+        "tests": [
+          "test_policy_blocks[evil.test-443-CONNECT-not-allowlisted]"
+        ]
+      },
+      "R2": {
+        "passed": true,
+        "tests": [
+          "test_private_dns[127.0.0.1]",
+          "test_private_dns[192.168.1.1]",
+          "test_private_dns[10.0.0.5]",
+          "test_private_dns[169.254.169.254]",
+          "test_private_dns[100.64.0.1]",
+          "test_private_dns[::1]",
+          "test_private_dns[::ffff:127.0.0.1]",
+          "test_private_dns[fd00::1]",
+          "test_private_dns[fe80::1]"
+        ]
+      },
+      "R3": {
+        "passed": true,
+        "tests": [
+          "test_policy_blocks[169.254.169.254-443-CONNECT-ip-literal]"
+        ]
+      },
+      "R4": {
+        "passed": true,
+        "tests": [
+          "test_policy_blocks[[::1]-443-CONNECT-ip-literal]",
+          "test_policy_blocks[[::ffff:127.0.0.1]-443-CONNECT-ip-literal]",
+          "test_policy_blocks[[fd00::1]-443-CONNECT-ip-literal]"
+        ]
+      },
+      "R5": {
+        "passed": true,
+        "tests": [
+          "test_dns_pinning"
+        ]
+      },
+      "R6": {
+        "passed": true,
+        "tests": [
+          "test_sni_and_not_tls"
+        ]
+      },
+      "R7": {
+        "passed": true,
+        "tests": [
+          "test_sni_and_not_tls"
+        ]
+      },
+      "R8": {
+        "passed": true,
+        "tests": [
+          "test_policy_blocks[xn--allowed-9za.test-443-CONNECT-suspicious-host]"
+        ]
+      },
+      "R9": {
+        "passed": true,
+        "tests": [
+          "test_policy_blocks[allowed.test-22-CONNECT-port]",
+          "test_policy_blocks[allowed.test-25-CONNECT-port]"
+        ]
+      },
+      "R10": {
+        "passed": true,
+        "tests": [
+          "test_policy_blocks[private.test-80-GET-tls-required]"
+        ]
+      },
+      "R11": {
+        "passed": true,
+        "tests": [
+          "test_auth_rate_limits"
+        ]
+      },
+      "R12": {
+        "passed": true,
+        "tests": [
+          "test_auth_rate_limits"
+        ]
+      },
+      "R13": {
+        "passed": true,
+        "tests": [
+          "test_smuggling_limits_slowloris"
+        ]
+      },
+      "R14": {
+        "passed": true,
+        "tests": [
+          "test_header_bomb_and_bad_chunks"
+        ]
+      },
+      "R15": {
+        "passed": true,
+        "tests": [
+          "test_smuggling_limits_slowloris"
+        ]
+      },
+      "R16": {
+        "passed": true,
+        "tests": [
+          "test_thousands_of_connections"
+        ]
+      },
+      "L1": {
+        "passed": true,
+        "tests": [
+          "test_tls_download"
+        ]
+      },
+      "L2": {
+        "passed": true,
+        "tests": [
+          "test_concurrency_and_wildcard"
+        ]
+      },
+      "L3": {
+        "passed": true,
+        "tests": [
+          "test_tls_download"
+        ]
+      },
+      "L4": {
+        "passed": true,
+        "tests": [
+          "test_fragmented_hello"
+        ]
+      },
+      "L5": {
+        "passed": true,
+        "tests": [
+          "test_concurrency_and_wildcard"
+        ]
+      }
+    },
+    "blocked": 16,
+    "attacks": 16,
+    "block_rate": 1.0,
+    "false_positive_rate": 0.0,
+    "note": "Category coverage from local fixtures. L3 smoke uses 1 MiB; bench/run.py separately measures 500 MiB. R5 rebinding is modeled with a test-only local pinned endpoint and an atomic DNS mapping change."
+  },
+  "fuzz_executions": {
+    "http": 341762,
+    "sni": 1488004
+  },
+  "valgrind_final_reports": [
+    "bench/results/valgrind-39121.txt",
+    "bench/results/valgrind-39184.txt",
+    "bench/results/valgrind-39341.txt",
+    "bench/results/valgrind-39494.txt"
+  ],
+  "clang_tidy": "clang-tidy: 15 translation units, 0 failures",
+  "observability": {
+    "active_metric": 100,
+    "accepted_established_sockets": 100,
+    "match": true,
+    "port": 54269,
+    "pid": 39023
+  },
+  "limits": [
+    "Docker build not run: Docker is not installed",
+    "Hosted CI not run: repository not pushed",
+    "Perf blocked by kernel policy; Callgrind profiles recorded",
+    "TSan and fuzz use per-process ASLR workaround"
+  ]
+}

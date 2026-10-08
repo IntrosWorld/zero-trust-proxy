@@ -5,6 +5,8 @@ cmake --preset release -DZT_BENCH=ON
 cmake --build --preset release
 ZT_BINARY=build/release/zt-proxy python3 bench/run.py --seconds 30
 python3 bench/plot.py                 # needs matplotlib
+python3 bench/summarize.py            # updates README from saved data
+ZT_BINARY=build/release/zt-proxy python3 bench/observe.py
 python3 tests/integration/redteam.py
 bash scripts/valgrind.sh
 bash scripts/fuzz.sh 30

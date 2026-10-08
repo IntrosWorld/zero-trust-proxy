@@ -1,0 +1,12 @@
+{'mode': 'direct', 'workers': 0, 'connections': 100, 'requests_per_second': 13655.33, 'p50': '7.21ms', 'p99': '10.12ms'}
+{'mode': 'proxy', 'workers': 1, 'connections': 100, 'requests_per_second': 9049.71, 'p50': '10.92ms', 'p99': '15.31ms'}
+{'mode': 'proxy', 'workers': 2, 'connections': 100, 'requests_per_second': 9274.82, 'p50': '10.60ms', 'p99': '14.88ms'}
+{'mode': 'proxy', 'workers': 4, 'connections': 100, 'requests_per_second': 10090.71, 'p50': '9.63ms', 'p99': '13.76ms'}
+{'mode': 'proxy', 'workers': 18, 'connections': 100, 'requests_per_second': 8791.02, 'p50': '11.14ms', 'p99': '15.44ms'}
+{'mode': 'direct', 'workers': 0, 'connections': 1000, 'requests_per_second': 10976.5, 'p50': '89.25ms', 'p99': '103.25ms'}
+{'mode': 'proxy', 'workers': 1, 'connections': 1000, 'requests_per_second': 8365.07, 'p50': '116.04ms', 'p99': '132.28ms'}
+{'mode': 'proxy', 'workers': 2, 'connections': 1000, 'requests_per_second': 8454.3, 'p50': '117.40ms', 'p99': '134.05ms'}
+{'mode': 'proxy', 'workers': 4, 'connections': 1000, 'requests_per_second': 8879.7, 'p50': '112.77ms', 'p99': '134.95ms'}
+{'mode': 'proxy', 'workers': 18, 'connections': 1000, 'requests_per_second': 7552.93, 'p50': '129.75ms', 'p99': '156.09ms'}
+{'bytes': 524288000, 'seconds': 0.5256764240002667, 'mib_per_second': 951.1554583238192, 'proxy_cpu_percent_one_core': 24.7300419164193, 'sha256': '411fd088435f42d23961db92a0c245b2f946aab0b98ab356649503680410a4dc'}
+{'connections': 1000, 'baseline_rss': 3985408, 'total_rss': 139476992, 'incremental_bytes_per_connection': 135491.584}

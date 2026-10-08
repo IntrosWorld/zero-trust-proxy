@@ -1,0 +1,31 @@
+Preset CMake variables:
+
+  CMAKE_BUILD_TYPE="Debug"
+  ZT_ASAN="ON"
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/mohit/projects/zt-proxy/build/asan
+Consolidate compiler generated dependencies of target zt_core
+[ 10%] Building CXX object CMakeFiles/zt_core.dir/src/proxy/worker.cpp.o
+[ 10%] Building CXX object CMakeFiles/zt_core.dir/src/policy/rate_limit.cpp.o
+[ 15%] Linking CXX static library libzt_core.a
+[ 75%] Built target zt_core
+Consolidate compiler generated dependencies of target zt-proxy
+Consolidate compiler generated dependencies of target unit_tests
+[ 85%] Building CXX object CMakeFiles/zt-proxy.dir/src/main.cpp.o
+[ 85%] Building CXX object CMakeFiles/unit_tests.dir/tests/unit/security_test.cpp.o
+[ 90%] Linking CXX executable zt-proxy
+[ 90%] Built target zt-proxy
+[ 95%] Linking CXX executable unit_tests
+[100%] Built target unit_tests
+Internal ctest changing into directory: /home/mohit/projects/zt-proxy/build/asan
+Test project /home/mohit/projects/zt-proxy/build/asan
+    Start 1: unit
+1/1 Test #1: unit .............................   Passed    0.02 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.02 sec
+.........................................                                [100%]
+41 passed in 14.18s
