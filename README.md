@@ -135,15 +135,15 @@ A blocked log record looks like this (illustrative values):
 
 For systemd, install the release binary to `/usr/local/bin/zt-proxy`, create a system user/group named `zt-proxy`, and put a validated config at `/etc/zt-proxy/config.json` readable by that group. Install [deploy/zt-proxy.service](deploy/zt-proxy.service) into `/etc/systemd/system/`. The service uses StateDirectory, an empty capability set, NoNewPrivileges, filesystem isolation and a 512 MiB memory ceiling. Size worker/connection limits to that budget; the example uses 512 connections per worker. The unit is supplied but was not installed into this machine's running services.
 
-The [multi-stage Dockerfile](deploy/Dockerfile) builds the binary and runs as UID 10001:
+The [Docker deployment guide](deploy/README.md) covers Compose startup, configuration reloads, persistent logs, health checks and reproducible container tests. The [multi-stage Dockerfile](deploy/Dockerfile) builds the binary and runs as UID/GID 10001:10001:
 
 ```bash
-docker build -f deploy/Dockerfile -t zt-proxy .
-# Linux host networking preserves the default loopback binding.
-docker run --rm --network host zt-proxy
+sudo docker compose -f deploy/compose.yml up -d --build
+sudo docker compose -f deploy/compose.yml ps
+curl --fail http://127.0.0.1:9100/healthz
 ```
 
-For bridge networking, mount an explicit config that binds `0.0.0.0` **and requires auth**, then publish the port. A default loopback listener inside a bridged container is not accessible through published ports. Docker is not installed on this host, so the container build is **not locally verified**. The checked-in [GitHub Actions workflow](.github/workflows/ci.yml) builds/tests release and sanitizer variants, checks static analysis/formatting, runs fuzz smoke tests and builds the container. Hosted CI has not been run or claimed green; this repository has not been pushed.
+For bridge networking, mount an explicit config that binds `0.0.0.0` **and requires auth**, then publish the port. A default loopback listener inside a bridged container is not accessible through published ports. Docker installation is awaiting desktop authentication on this host, so the container build is **not locally verified**. Python/shell syntax and deployment YAML checks pass; runtime checks are provided in `scripts/check_docker.py` and `scripts/check_compose.py`. The checked-in [GitHub Actions workflow](.github/workflows/ci.yml) builds/tests release and sanitizer variants, checks static analysis/formatting, runs fuzz smoke tests and builds the container. Hosted CI has not been run or claimed green; this repository has not been pushed.
 
 ## SentinelAgent
 
