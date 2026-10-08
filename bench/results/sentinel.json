@@ -1,0 +1,98 @@
+{
+  "agent_checkout": "/media/mohit/external_ntfs/College/AIML_project",
+  "http_client": "actual SentinelAgent EgressClient through ZTClient adapter",
+  "tls_verified": true,
+  "dlp_blocked": true,
+  "agent_policy_blocked": true,
+  "proxy_block_surfaced": true,
+  "proxy_records": [
+    {
+      "timestamp": 1791426800833,
+      "client_ip": "127.0.0.1",
+      "method": "CONNECT",
+      "host": "allowed.test",
+      "port": 33451,
+      "sni": "allowed.test",
+      "resolved_ip": "127.0.0.1",
+      "decision": "allow",
+      "rule_id": "allow",
+      "reason": "allowed",
+      "status": 200,
+      "bytes_up": 765,
+      "bytes_down": 2110,
+      "duration_ms": 7.96237
+    },
+    {
+      "timestamp": 1791426800847,
+      "client_ip": "127.0.0.1",
+      "method": "CONNECT",
+      "host": "allowed.test",
+      "port": 33451,
+      "sni": "",
+      "resolved_ip": "",
+      "decision": "block",
+      "rule_id": "denylisted",
+      "reason": "destination denied",
+      "status": 403,
+      "bytes_up": 0,
+      "bytes_down": 144,
+      "duration_ms": 0.346027
+    }
+  ],
+  "agent_events": [
+    {
+      "kind": "request",
+      "method": "GET",
+      "host": "allowed.test",
+      "port": 33451,
+      "decision": "allow",
+      "rule": "dlp",
+      "dlp": {
+        "action": "allow",
+        "findings": 0,
+        "detectors": []
+      }
+    },
+    {
+      "kind": "request",
+      "method": "POST",
+      "host": "allowed.test",
+      "port": 33451,
+      "decision": "block",
+      "rule": "dlp",
+      "dlp": {
+        "action": "block",
+        "findings": 1,
+        "detectors": [
+          {
+            "id": "password",
+            "severity": "high",
+            "start": 0,
+            "end": 20
+          }
+        ]
+      }
+    },
+    {
+      "kind": "request",
+      "method": "GET",
+      "host": "evil.test",
+      "port": 33451,
+      "decision": "block",
+      "rule": "not-allowlisted"
+    },
+    {
+      "kind": "request",
+      "method": "GET",
+      "host": "allowed.test",
+      "port": 33451,
+      "decision": "allow",
+      "rule": "dlp",
+      "dlp": {
+        "action": "allow",
+        "findings": 0,
+        "detectors": []
+      }
+    }
+  ]
+}
