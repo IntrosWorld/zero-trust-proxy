@@ -1,0 +1,37 @@
+Images space usage:
+
+REPOSITORY   TAG       IMAGE ID       CREATED              SIZE      SHARED SIZE   UNIQUE SIZE   CONTAINERS
+zt-proxy     local     011b15f3c72c   About a minute ago   126MB     117.5MB       9.012MB       1
+ubuntu       22.04     5ec03bb3441e   13 days ago          119MB     117.5MB       1.983MB       0
+
+Containers space usage:
+
+CONTAINER ID   IMAGE            COMMAND                  LOCAL VOLUMES   SIZE      CREATED         STATUS                   NAMES
+d841c2f5a1e6   zt-proxy:local   "/usr/local/bin/zt-p…"   1               4.1kB     5 seconds ago   Up 5 seconds (healthy)   zt-proxy-proxy-1
+
+Local Volumes space usage:
+
+VOLUME NAME           LINKS     SIZE
+zt-proxy_proxy-logs   1         0B
+
+Build cache usage: 490.7MB
+
+CACHE ID        CACHE TYPE     SIZE      CREATED              LAST USED            USAGE     SHARED
+i8y3uo55cl9r*   regular        117MB     5 minutes ago                             0         true
+s8djik929uhg*   regular        49.2kB    4 minutes ago        4 minutes ago        1         true
+nsg8urkp0bst    source.local   8.19kB    6 minutes ago        About a minute ago   2         false
+tinyejrvomo9    source.local   8.19kB    5 minutes ago        About a minute ago   2         false
+tal9od7n2uxx    regular        406kB     About a minute ago   About a minute ago   1         true
+viyaek9ioshl    regular        4.13kB    About a minute ago   About a minute ago   1         true
+6eo0ir0ixmkf    source.local   229kB     5 minutes ago        About a minute ago   2         false
+ba6nwtnierew    regular        1.81MB    About a minute ago   About a minute ago   1         false
+u9r9tglerl9j    regular        12.8MB    2 minutes ago        About a minute ago   1         false
+enxi04tib4i9    regular        29kB      About a minute ago   About a minute ago   1         true
+xchtuo0xu4rp    regular        21.2kB    2 minutes ago        About a minute ago   1         true
+mehjjpjml1az    regular        352MB     About a minute ago   About a minute ago   1         false
+kza5msgegvsp    regular        5.14MB    2 minutes ago        About a minute ago   1         true
+mrge3u5xonkg    regular        307kB     2 minutes ago        About a minute ago   1         true
+4qf69p0tesvx    regular        8.19kB    About a minute ago   About a minute ago   1         false
+6ue72ljdwwh5    regular        16.4kB    About a minute ago   About a minute ago   1         false
+knh0kknhn9dr    regular        209kB     About a minute ago   About a minute ago   1         false
+ugx35dqxb90g    regular        20.9kB    About a minute ago   About a minute ago   1         true

@@ -1,0 +1,164 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.28kB done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:22.04
+#2 DONE 6.4s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 235B done
+#3 DONE 0.1s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [build 1/6] FROM docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401
+#5 resolve docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401 0.0s done
+#5 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 83.49kB done
+#4 DONE 0.1s
+
+#5 [build 1/6] FROM docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 0B / 29.75MB 0.2s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 2.10MB / 29.75MB 4.4s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 4.19MB / 29.75MB 7.1s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 6.29MB / 29.75MB 10.2s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 8.39MB / 29.75MB 12.6s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 10.49MB / 29.75MB 14.3s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 12.58MB / 29.75MB 15.3s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 14.68MB / 29.75MB 16.4s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 16.78MB / 29.75MB 17.3s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 18.87MB / 29.75MB 18.2s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 20.97MB / 29.75MB 19.1s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 23.07MB / 29.75MB 19.8s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 25.17MB / 29.75MB 21.0s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 27.26MB / 29.75MB 22.2s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 29.75MB / 29.75MB 23.0s
+#5 sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 29.75MB / 29.75MB 23.0s done
+#5 extracting sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67
+#5 extracting sha256:98c4455a98982b35380ec62f90d5cf0edff02eeb4b3bb18595d871fdeb0c0c67 0.6s done
+#5 DONE 23.7s
+
+#6 [stage-1 2/6] RUN apt-get update && apt-get install -y --no-install-recommends libstdc++6 ca-certificates && rm -rf /var/lib/apt/lists/* && groupadd --system --gid 10001 proxyuser && useradd --system --uid 10001 --gid 10001 --home /var/lib/zt-proxy proxyuser && mkdir -p /var/lib/zt-proxy /etc/zt-proxy && chown 10001:10001 /var/lib/zt-proxy
+#6 ...
+
+#7 [build 2/6] RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake ca-certificates && rm -rf /var/lib/apt/lists/*
+#7 32.67 Ign:1 http://archive.ubuntu.com/ubuntu jammy InRelease
+#7 32.67 Ign:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+#7 ...
+
+#6 [stage-1 2/6] RUN apt-get update && apt-get install -y --no-install-recommends libstdc++6 ca-certificates && rm -rf /var/lib/apt/lists/* && groupadd --system --gid 10001 proxyuser && useradd --system --uid 10001 --gid 10001 --home /var/lib/zt-proxy proxyuser && mkdir -p /var/lib/zt-proxy /etc/zt-proxy && chown 10001:10001 /var/lib/zt-proxy
+#6 32.67 Ign:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+#6 32.68 Ign:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+#6 32.74 Ign:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+#6 32.75 Ign:4 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+#6 33.77 Ign:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+#6 33.79 Ign:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+#6 33.80 Ign:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+#6 33.81 Ign:4 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+#6 35.82 Ign:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+#6 35.84 Ign:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+#6 35.84 Ign:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+#6 35.86 Ign:4 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+#6 ...
+
+#7 [build 2/6] RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake ca-certificates && rm -rf /var/lib/apt/lists/*
+#7 32.74 Ign:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+#7 32.75 Ign:4 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+#7 33.77 Ign:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+#7 33.78 Ign:1 http://archive.ubuntu.com/ubuntu jammy InRelease
+#7 33.79 Ign:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+#7 33.80 Ign:4 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+#7 35.82 Ign:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+#7 35.83 Ign:1 http://archive.ubuntu.com/ubuntu jammy InRelease
+#7 35.84 Ign:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+#7 35.85 Ign:4 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+#7 39.83 Err:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+#7 39.83   Could not connect to security.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.81), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.83), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.23), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.24), connection timed out
+#7 39.84 Err:1 http://archive.ubuntu.com/ubuntu jammy InRelease
+#7 39.84   Could not connect to archive.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.81), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.24), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.23), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.83), connection timed out
+#7 39.86 Err:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+#7 39.86   Unable to connect to archive.ubuntu.com:80:
+#7 39.87 Err:4 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+#7 39.87   Unable to connect to archive.ubuntu.com:80:
+#7 39.88 Reading package lists...
+#7 39.89 W: Failed to fetch http://archive.ubuntu.com/ubuntu/dists/jammy/InRelease  Could not connect to archive.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.81), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.24), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.23), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.83), connection timed out
+#7 39.89 W: Failed to fetch http://archive.ubuntu.com/ubuntu/dists/jammy-updates/InRelease  Unable to connect to archive.ubuntu.com:80:
+#7 39.89 W: Failed to fetch http://archive.ubuntu.com/ubuntu/dists/jammy-backports/InRelease  Unable to connect to archive.ubuntu.com:80:
+#7 39.89 W: Failed to fetch http://security.ubuntu.com/ubuntu/dists/jammy-security/InRelease  Could not connect to security.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.81), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.83), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.23), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.24), connection timed out
+#7 39.89 W: Some index files failed to download. They have been ignored, or old ones used instead.
+#7 39.89 Reading package lists...
+#7 39.90 Building dependency tree...
+#7 39.90 Reading state information...
+#7 39.90 Package ca-certificates is not available, but is referred to by another package.
+#7 39.90 This may mean that the package is missing, has been obsoleted, or
+#7 39.90 is only available from another source
+#7 39.90 
+#7 39.90 E: Unable to locate package build-essential
+#7 39.90 E: Unable to locate package cmake
+#7 39.90 E: Package 'ca-certificates' has no installation candidate
+#7 ERROR: process "/bin/sh -c apt-get update && apt-get install -y --no-install-recommends build-essential cmake ca-certificates && rm -rf /var/lib/apt/lists/*" did not complete successfully: exit code: 100
+
+#6 [stage-1 2/6] RUN apt-get update && apt-get install -y --no-install-recommends libstdc++6 ca-certificates && rm -rf /var/lib/apt/lists/* && groupadd --system --gid 10001 proxyuser && useradd --system --uid 10001 --gid 10001 --home /var/lib/zt-proxy proxyuser && mkdir -p /var/lib/zt-proxy /etc/zt-proxy && chown 10001:10001 /var/lib/zt-proxy
+#6 39.84 Err:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+#6 39.84   Could not connect to security.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.24), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.23), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.83), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.81), connection timed out
+#6 39.85 Err:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+#6 39.85   Could not connect to archive.ubuntu.com:80 (185.125.190.81), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.83), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.24), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.23), connection timed out
+#6 39.87 Err:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+#6 39.87   Unable to connect to archive.ubuntu.com:80:
+#6 39.88 Err:4 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+#6 39.88   Unable to connect to archive.ubuntu.com:80:
+#6 39.88 Reading package lists...
+#6 39.89 W: Failed to fetch http://archive.ubuntu.com/ubuntu/dists/jammy/InRelease  Could not connect to archive.ubuntu.com:80 (185.125.190.81), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to archive.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.83), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.24), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to archive.ubuntu.com:80 (91.189.92.23), connection timed out
+#6 39.89 W: Failed to fetch http://archive.ubuntu.com/ubuntu/dists/jammy-updates/InRelease  Unable to connect to archive.ubuntu.com:80:
+#6 39.89 W: Failed to fetch http://archive.ubuntu.com/ubuntu/dists/jammy-backports/InRelease  Unable to connect to archive.ubuntu.com:80:
+#6 39.89 W: Failed to fetch http://security.ubuntu.com/ubuntu/dists/jammy-security/InRelease  Could not connect to security.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.24), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.23), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.83), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.81), connection timed out
+#6 39.89 W: Some index files failed to download. They have been ignored, or old ones used instead.
+#6 39.90 Reading package lists...
+#6 39.91 Building dependency tree...
+#6 39.91 Reading state information...
+#6 39.91 Package ca-certificates is not available, but is referred to by another package.
+#6 39.91 This may mean that the package is missing, has been obsoleted, or
+#6 39.91 is only available from another source
+#6 39.91 
+#6 39.91 E: Package 'ca-certificates' has no installation candidate
+#6 ERROR: process "/bin/sh -c apt-get update && apt-get install -y --no-install-recommends libstdc++6 ca-certificates && rm -rf /var/lib/apt/lists/* && groupadd --system --gid 10001 proxyuser && useradd --system --uid 10001 --gid 10001 --home /var/lib/zt-proxy proxyuser && mkdir -p /var/lib/zt-proxy /etc/zt-proxy && chown 10001:10001 /var/lib/zt-proxy" did not complete successfully: exit code: 100
+------
+ > [build 2/6] RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake ca-certificates && rm -rf /var/lib/apt/lists/*:
+39.89 Reading package lists...
+39.90 Building dependency tree...
+39.90 Reading state information...
+39.90 Package ca-certificates is not available, but is referred to by another package.
+39.90 This may mean that the package is missing, has been obsoleted, or
+39.90 is only available from another source
+39.90 
+39.90 E: Unable to locate package build-essential
+39.90 E: Unable to locate package cmake
+39.90 E: Package 'ca-certificates' has no installation candidate
+------
+------
+ > [stage-1 2/6] RUN apt-get update && apt-get install -y --no-install-recommends libstdc++6 ca-certificates && rm -rf /var/lib/apt/lists/* && groupadd --system --gid 10001 proxyuser && useradd --system --uid 10001 --gid 10001 --home /var/lib/zt-proxy proxyuser && mkdir -p /var/lib/zt-proxy /etc/zt-proxy && chown 10001:10001 /var/lib/zt-proxy:
+39.89 W: Failed to fetch http://security.ubuntu.com/ubuntu/dists/jammy-security/InRelease  Could not connect to security.ubuntu.com:80 (185.125.190.82), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.24), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.22), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.82), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.81), connection timed out Could not connect to security.ubuntu.com:80 (91.189.92.23), connection timed out Could not connect to security.ubuntu.com:80 (91.189.91.83), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.83), connection timed out Could not connect to security.ubuntu.com:80 (185.125.190.81), connection timed out
+39.89 W: Some index files failed to download. They have been ignored, or old ones used instead.
+39.90 Reading package lists...
+39.91 Building dependency tree...
+39.91 Reading state information...
+39.91 Package ca-certificates is not available, but is referred to by another package.
+39.91 This may mean that the package is missing, has been obsoleted, or
+39.91 is only available from another source
+39.91 
+39.91 E: Package 'ca-certificates' has no installation candidate
+------
+WARNING: current commit information was not captured by the build: failed to read current commit information with git rev-parse --is-inside-work-tree
+Dockerfile:2
+--------------------
+   1 |     FROM ubuntu:22.04 AS build
+   2 | >>> RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake ca-certificates && rm -rf /var/lib/apt/lists/*
+   3 |     WORKDIR /source
+   4 |     COPY CMakeLists.txt CMakePresets.json ./
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c apt-get update && apt-get install -y --no-install-recommends build-essential cmake ca-certificates && rm -rf /var/lib/apt/lists/*" did not complete successfully: exit code: 100

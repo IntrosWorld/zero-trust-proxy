@@ -1,5 +1,7 @@
 # Docker on Linux
 
+This deployment was verified locally with Docker Engine 29.8.2: all 41 integration tests and the Compose lifecycle checks pass. The measured footprint is about 1.04 GB including Engine packages, images and build cache; the runtime image reports 126.5 MB. See [storage evidence](../bench/results/docker-storage.json).
+
 Install [Docker Engine and the Compose plugin](https://docs.docker.com/engine/install/ubuntu/). Docker stores images and build cache on the Linux filesystem by default; copying this repository to another drive does not copy those images.
 
 From the repository root:
@@ -68,4 +70,4 @@ sudo docker system df -v
 sudo du -sh /var/lib/docker /var/lib/containerd
 ```
 
-Image size, unpacked layers and build cache are different measurements and can share data. The compiler/build stage stays in cache, not the runtime image. Rebuilding after cache removal downloads and compiles again. Do not prune shared Docker data indiscriminately.
+Image size, unpacked layers and build cache are different measurements and can share data. The compiler/build stage stays in cache, not the runtime image. Package downloads use HTTPS; an official Alpine image supplies the initial CA bundle until Ubuntu installs its own ca-certificates package. Rebuilding after cache removal downloads and compiles again. Do not prune shared Docker data indiscriminately.

@@ -172,9 +172,18 @@
     "pid": 39023
   },
   "limits": [
-    "Docker build not run: Docker is not installed",
     "Hosted CI not run: repository not pushed",
     "Perf blocked by kernel policy; Callgrind profiles recorded",
     "TSan and fuzz use per-process ASLR workaround"
-  ]
+  ],
+  "docker": {
+    "source_commit": "72f0672d450f51c3a17477b901f3327e4e53c86a",
+    "integration_tests": 41,
+    "compose_checks_passed": true,
+    "evidence": [
+      "bench/results/docker.json",
+      "bench/results/docker-compose.json",
+      "bench/results/docker-storage.json"
+    ]
+  }
 }

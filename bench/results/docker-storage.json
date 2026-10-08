@@ -1,0 +1,49 @@
+{
+  "timestamp": 1791463918.542536,
+  "packages": {
+    "docker-ce": {
+      "version": "5:29.8.2-1~ubuntu.22.04~jammy",
+      "installed_size_bytes": 115375104
+    },
+    "docker-ce-cli": {
+      "version": "5:29.8.2-1~ubuntu.22.04~jammy",
+      "installed_size_bytes": 47569920
+    },
+    "containerd.io": {
+      "version": "2.3.6-1~ubuntu.22.04~jammy",
+      "installed_size_bytes": 88462336
+    },
+    "docker-buildx-plugin": {
+      "version": "0.37.1-1~ubuntu.22.04~jammy",
+      "installed_size_bytes": 73070592
+    },
+    "docker-compose-plugin": {
+      "version": "5.6.0-1~ubuntu.22.04~jammy",
+      "installed_size_bytes": 32677888
+    }
+  },
+  "allocated_bytes": {
+    "/var/lib/docker": 94699520,
+    "/var/lib/containerd": 589922304
+  },
+  "filesystems": {
+    "/var/lib/docker": {
+      "target": "/",
+      "source": "/dev/sda2",
+      "fstype": "ext4",
+      "options": "rw,relatime,errors=remount-ro,stripe=8191"
+    },
+    "/var/lib/containerd": {
+      "target": "/",
+      "source": "/dev/sda2",
+      "fstype": "ext4",
+      "options": "rw,relatime,errors=remount-ro,stripe=8191"
+    }
+  },
+  "packages_total_bytes": 357155840,
+  "engine_and_storage_bytes": 1041777664,
+  "root_available_before_bytes": 14934827008,
+  "root_available_after_bytes": 13890371584,
+  "root_used_change_bytes": 1044455424,
+  "note": "Package installed sizes plus allocated data directories; shared image/build layers are not added twice. Root disk change includes unrelated concurrent host activity and package download caches."
+}

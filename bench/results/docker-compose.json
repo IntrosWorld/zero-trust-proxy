@@ -1,0 +1,21 @@
+{
+  "project": "zt-proxy-check-774638f0c45c",
+  "passed": true,
+  "timestamp": 1791463876.813884,
+  "health": "healthy",
+  "runtime_user": "10001:10001",
+  "read_only": true,
+  "cap_drop": [
+    "ALL"
+  ],
+  "security_options": [
+    "no-new-privileges:true"
+  ],
+  "memory_bytes": 536870912,
+  "pids_limit": 128,
+  "network": "host",
+  "policy_denial": true,
+  "reload": true,
+  "graceful_exit_code": 0,
+  "volume_persistence": true
+}
