@@ -43,6 +43,7 @@ jobs:
       - run: docker build -f deploy/Dockerfile -t zt-proxy .
       - run: sudo apt-get update && sudo apt-get install -y python3-pytest openssl curl
       - run: python3 scripts/check_docker.py --image zt-proxy --skip-build
+      - run: docker tag zt-proxy zt-proxy:local && python3 scripts/check_compose.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
