@@ -7,6 +7,7 @@ using Clock = std::chrono::steady_clock;
 class RateLimiter {
   struct Bucket {
     double tokens;
+    double refill_seconds;
     Clock::time_point time;
   };
   std::unordered_map<std::string, Bucket> buckets_;

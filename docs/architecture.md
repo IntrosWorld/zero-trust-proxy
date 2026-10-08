@@ -18,7 +18,7 @@ On EAGAIN writing to a destination, the corresponding source loses EPOLLIN until
 
 ## Isolation and shared state
 
-Connection objects and rate buckets belong to one worker, requiring no locks. Per-client rate and connection limits are **per worker**; effective process allowance can be up to worker count times the configured limit. Use one worker for a strict single-bucket limit. The rate map is bounded at 65,536 clients, rejects new entries when full and prunes entries idle for ten minutes.
+Connection objects and rate buckets belong to one worker, requiring no locks. Per-client rate and connection limits are **per worker**; effective process allowance can be up to worker count times the configured limit. Use one worker for a strict single-bucket limit. The rate map is bounded at 65,536 clients, rejects new entries when full and prunes entries idle for ten minutes only when enough time has passed to fully replenish a bucket. This preserves very low configured limits across cleanup.
 
 Immutable configs are exchanged with atomic shared_ptr load/store (the C++20 free-function API also works with GCC 11). Existing connections retain their snapshot. Shared counters use relaxed atomics because individual counters do not publish other memory. Bounded-cardinality rule and method maps use a small mutex. The log queue and each resolver mailbox have their own mutex; filesystem I/O happens only on the logger thread.
 

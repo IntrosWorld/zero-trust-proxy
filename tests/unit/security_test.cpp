@@ -170,3 +170,12 @@ TEST(Sni, RecordedOpenSSL) {
   for (size_t i = 0; i < bytes.size(); ++i)
     EXPECT_EQ(extract_sni(std::string_view(bytes).substr(0, i)).status, SniStatus::need_more_data);
 }
+
+TEST(Rate, IdleCleanupPreservesSlowLimits) {
+  RateLimiter limiter;
+  auto start = Clock::now();
+  EXPECT_TRUE(limiter.allow("slow", 1.0 / 3600, 1, start));
+  limiter.prune(start + std::chrono::seconds(601));
+  EXPECT_FALSE(limiter.allow("slow", 1.0 / 3600, 1, start + std::chrono::seconds(601)));
+  EXPECT_TRUE(limiter.allow("slow", 1.0 / 3600, 1, start + std::chrono::seconds(3601)));
+}
