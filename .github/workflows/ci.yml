@@ -41,4 +41,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker build -f deploy/Dockerfile -t zt-proxy .
-      - run: docker run --rm zt-proxy --config /etc/zt-proxy/config.json --check-config
+      - run: sudo apt-get update && sudo apt-get install -y python3-pytest openssl curl
+      - run: python3 scripts/check_docker.py --image zt-proxy --skip-build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-results
+          path: bench/results/docker*

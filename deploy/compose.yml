@@ -1,0 +1,24 @@
+name: zt-proxy
+services:
+  proxy:
+    image: zt-proxy:local
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    # Linux host networking keeps both listeners on the host's loopback interface.
+    network_mode: host
+    command: ["--config", "/etc/zt-proxy/zt-proxy.json"]
+    user: "10001:10001"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 512m
+    pids_limit: 128
+    stop_grace_period: 45s
+    restart: unless-stopped
+    volumes:
+      # Mount the directory so atomic config replacement remains visible to SIGHUP.
+      - ../config:/etc/zt-proxy:ro
+      - proxy-logs:/var/lib/zt-proxy
+volumes:
+  proxy-logs:

@@ -1,5 +1,11 @@
-build
-.git
-.venv
-bench/results
-*.jsonl
+# Only these inputs are needed to build the runtime image.
+**
+!CMakeLists.txt
+!CMakePresets.json
+!src/
+!src/**
+!config/
+!config/zt-proxy.json
+!deploy/
+!deploy/Dockerfile
+!deploy/healthcheck.sh
