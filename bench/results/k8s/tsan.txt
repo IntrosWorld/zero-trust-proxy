@@ -1,2 +1,28 @@
+Preset CMake variables:
+
+  CMAKE_BUILD_TYPE="Debug"
+  ZT_TSAN="ON"
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/mohit/projects/zt-proxy/build/tsan
+Consolidate compiler generated dependencies of target zt_core
+[  3%] Building CXX object CMakeFiles/zt_core.dir/src/config/config.cpp.o
+[  7%] Linking CXX static library libzt_core.a
+[ 77%] Built target zt_core
+Consolidate compiler generated dependencies of target zt-proxy
+Consolidate compiler generated dependencies of target unit_tests
+[ 81%] Linking CXX executable unit_tests
+[ 85%] Linking CXX executable zt-proxy
+[ 96%] Built target unit_tests
+[100%] Built target zt-proxy
+Internal ctest changing into directory: /home/mohit/projects/zt-proxy/build/tsan
+Test project /home/mohit/projects/zt-proxy/build/tsan
+    Start 1: unit
+1/1 Test #1: unit .............................   Passed    0.03 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.03 sec
 ...................................................                      [100%]
-51 passed in 19.40s
+51 passed in 18.41s

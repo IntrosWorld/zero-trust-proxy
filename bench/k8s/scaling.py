@@ -46,7 +46,7 @@ def scaling(control,args):
 
 def hpa(control,args):
     scale(3);await_policy(control.put(rate=1e9,burst=1e9))
-    subprocess.run(['helm','upgrade','zt-proxy',str(ROOT/'deploy/helm/zt-proxy'),'-n','zt-system','--reuse-values','--set','hpa.enabled=true','--wait','--timeout','3m'],check=True,stdout=subprocess.DEVNULL)
+    subprocess.run(['helm','upgrade','zt-proxy',str(ROOT/'deploy/helm/zt-proxy'),'-n','zt-system','--reuse-values','--force-conflicts','--set','hpa.enabled=true','--wait','--timeout','3m'],check=True,stdout=subprocess.DEVNULL)
     await_policy(control.call())
     traffic=subprocess.Popen(['kubectl','-n','apps','exec','deployment/zt-client','--','wrk','-t2','-c128',f'-d{args.load_seconds}s','-s','/opt/wrk.lua','http://zt-proxy.zt-system:3128/'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
     start=time.monotonic();timeline=[]

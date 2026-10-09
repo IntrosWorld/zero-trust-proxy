@@ -28,8 +28,10 @@ std::shared_ptr<const Config> parse_config(const std::string &text, bool allow_t
   if (text.size() > 1024 * 1024)
     throw std::runtime_error("config too large");
   auto obj = Reader(text).read().as<Json::Object>();
-  auto c = base ? std::make_shared<Config>(*base) : std::make_shared<Config>();
-  if (!base)
+  auto c = std::make_shared<Config>();
+  if (base)
+    *c = *base;
+  else
     c->workers = std::max(1U, std::thread::hardware_concurrency());
   auto take = [&](const char *key) -> const Json * {
     auto it = obj.find(key);

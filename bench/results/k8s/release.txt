@@ -1,0 +1,30 @@
+Preset CMake variables:
+
+  CMAKE_BUILD_TYPE="Release"
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/mohit/projects/zt-proxy/build/release
+Consolidate compiler generated dependencies of target zt_core
+[  3%] Building CXX object CMakeFiles/zt_core.dir/src/config/config.cpp.o
+[  6%] Linking CXX static library libzt_core.a
+[ 72%] Built target zt_core
+Consolidate compiler generated dependencies of target zt-proxy
+Consolidate compiler generated dependencies of target body_bench
+Consolidate compiler generated dependencies of target unit_tests
+[ 75%] Linking CXX executable zt-proxy
+[ 79%] Linking CXX executable body_bench
+[ 82%] Linking CXX executable unit_tests
+[ 86%] Built target body_bench
+[ 89%] Built target zt-proxy
+[100%] Built target unit_tests
+Internal ctest changing into directory: /home/mohit/projects/zt-proxy/build/release
+Test project /home/mohit/projects/zt-proxy/build/release
+    Start 1: unit
+1/1 Test #1: unit .............................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+...................................................                      [100%]
+51 passed in 16.64s
