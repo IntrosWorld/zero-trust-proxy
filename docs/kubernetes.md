@@ -88,6 +88,18 @@ python3 bench/k8s/scaling.py E4
 sudo -E bash scripts/k8s/check-cluster.sh
 ```
 
+To run the complete create/test/delete harness alongside the existing demo with a smaller disposable **one-node** fixture:
+
+```bash
+sudo -E env ZT_CLUSTER=zt-proxy-ci \
+  ZT_KUBECONFIG="$PWD/artifacts/kubeconfig-zt-proxy-ci" \
+  ZT_KIND_CONFIG="$PWD/deploy/k8s/kind-ci.yaml" \
+  ZT_RESULTS_DIR="$PWD/bench/results/k8s/zt-proxy-ci" \
+  bash scripts/k8s/check-cluster.sh
+```
+
+This uses separate cluster credentials and results, runs three proxy replicas, then exports diagnostic logs and deletes only the temporary cluster. The one-node fixture checks installation and lifecycle automation; placement across nodes and HPA remain covered by the three-node demo results. The harness stops before creation if Docker is inaccessible or its chosen cluster name already exists.
+
 Experiments modify only this dedicated cluster and restore stopped services and working runtime settings in their cleanup paths; their benchmark policy and HPA state remain visible. Reapply your desired policy after running experiments. Helm 4 reconciliation uses `--force-conflicts` for this release because experiments intentionally patch fields temporarily owned by kubectl; it does not delete or replace the PVC. They should run sequentially because they change shared policy, replica counts and deployments. The CI harness creates the dedicated cluster, runs E1/E2/E5/E8/E9/E10 as pass/fail checks and tears it down. Hosted GitHub Actions remains unexecuted: this repository has not been pushed. Local CI-equivalent checks and their raw results are recorded separately.
 
 ![Live Grafana dashboard during the wrk experiment](../bench/results/k8s/grafana.png)

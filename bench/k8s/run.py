@@ -17,7 +17,7 @@ import urllib.error
 ROOT=Path(__file__).resolve().parents[2]
 os.environ['PATH']=str(ROOT/'artifacts/bin')+':'+os.environ['PATH']
 os.environ.setdefault('KUBECONFIG',str(ROOT/'artifacts/kubeconfig'))
-OUT=ROOT/'bench/results/k8s';OUT.mkdir(parents=True,exist_ok=True)
+OUT=Path(os.environ.get('ZT_RESULTS_DIR',ROOT/'bench/results/k8s'));OUT.mkdir(parents=True,exist_ok=True)
 
 
 def k(*args,**kw):

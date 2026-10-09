@@ -1,15 +1,17 @@
 #!/bin/bash
-# Requires Docker access. Uses only the dedicated zt-proxy kind cluster.
+# Requires Docker access. Refuses an existing cluster with the chosen name.
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 cd "$ZT_ROOT"
-if kind get clusters | grep -qx "$ZT_CLUSTER"; then
-  echo 'Cluster zt-proxy already exists; use bench/k8s/run.py against it, or delete it deliberately first.' >&2
+clusters=$(kind get clusters)
+if grep -qx "$ZT_CLUSTER" <<< "$clusters"; then
+  echo "Cluster $ZT_CLUSTER already exists; choose a separate test name or run individual experiments against it." >&2
   exit 1
 fi
+mkdir -p "$ZT_RESULTS_DIR"
 cleanup() {
-  kubectl get pods -A -o wide > bench/results/k8s/ci-pods.txt 2>&1 || true
-  kind export logs artifacts/cluster-logs --name "$ZT_CLUSTER" || true
+  kubectl get pods -A -o wide > "$ZT_RESULTS_DIR/ci-pods.txt" 2>&1 || true
+  kind export logs "artifacts/cluster-logs-$ZT_CLUSTER" --name "$ZT_CLUSTER" || true
   kind delete cluster --name "$ZT_CLUSTER"
 }
 trap cleanup EXIT
