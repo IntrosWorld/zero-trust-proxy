@@ -168,6 +168,8 @@ The `kubernetes` branch runs a **local three-node kind cluster on one Linux mach
 
 All ten local cluster experiments passed. The [rolling-update experiment](bench/results/k8s/E5.json) reduced interrupted requests from **41 to 0** with readiness and draining. [Autoscaling](bench/results/k8s/E4.json) increased replicas **3 → 6 → 3**, and [bypass enforcement](bench/results/k8s/E8.json) blocked direct HTTPS while allowing authenticated proxied HTTPS. These are bounded local tests, not production availability guarantees.
 
+The [fresh-cluster lifecycle harness](bench/results/k8s/zt-proxy-ci/summary.json) also passed end-to-end on an isolated one-node fixture: build, install, six cluster checks, diagnostic export and teardown. The existing three-node demo and its policy were preserved.
+
 The branch has **21 C++ tests, 46 proxy integration tests and 5 control-plane tests**, verified in release, ASan/UBSan and TSan. The container runs the 46 proxy tests. [Full results and limitations](docs/kubernetes.md#recorded-results-9-october-2026) include every experiment, policy rollout timing, uneven scaling and Redis latency. High-rate benchmarks measure authenticated **403 policy decisions**, not upstream forwarding throughput. Hosted GitHub Actions is configured but has not run.
 
 ![Live Grafana dashboard during the Kubernetes load test](bench/results/k8s/grafana.png)

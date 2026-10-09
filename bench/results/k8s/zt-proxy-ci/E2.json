@@ -1,0 +1,30 @@
+{
+  "experiment": "E2",
+  "started": 1791545826.4187326,
+  "passed": true,
+  "polling": {
+    "samples_ms": [
+      755.6258650001837,
+      857.4620890003644,
+      916.0043470001256
+    ],
+    "p50_ms": 857.4620890003644,
+    "max_ms": 916.0043470001256,
+    "replicas": 3,
+    "poll_interval_ms": 200,
+    "includes": "API write + kubectl exec observations + every-pod deny probes + rollout read"
+  },
+  "long_poll": {
+    "samples_ms": [
+      709.9969740002052,
+      717.5336759992206,
+      835.2202159994704
+    ],
+    "p50_ms": 717.5336759992206,
+    "max_ms": 835.2202159994704,
+    "replicas": 3,
+    "poll_interval_ms": 200,
+    "includes": "API write + kubectl exec observations + every-pod deny probes + rollout read"
+  },
+  "duration_seconds": 27.835564374923706
+}

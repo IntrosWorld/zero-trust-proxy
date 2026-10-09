@@ -1,0 +1,93 @@
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.70kB done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:22.04
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/alpine:3.22
+#3 DONE 4.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context:
+#4 transferring context: 384B done
+#4 DONE 1.7s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [base 1/3] FROM docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401
+#6 resolve docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401 0.1s done
+#6 DONE 0.1s
+
+#7 [certificates 1/1] FROM docker.io/library/alpine:3.22@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8
+#7 resolve docker.io/library/alpine:3.22@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8 0.1s done
+#7 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 115.92kB done
+#5 DONE 0.1s
+
+#8 [runtime 4/5] COPY --chmod=755 deploy/healthcheck.sh /usr/local/bin/zt-healthcheck
+#8 CACHED
+
+#9 [base 3/3] RUN sed -i 's|http://|https://|g' /etc/apt/sources.list
+#9 CACHED
+
+#10 [runtime 2/5] COPY --from=build /source/build/release/zt-proxy /usr/local/bin/zt-proxy
+#10 CACHED
+
+#11 [build 1/5] RUN apt-get update -o APT::Update::Error-Mode=any && apt-get install -y --no-install-recommends build-essential cmake libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [build 5/5] RUN cmake --preset release -DBUILD_TESTING=OFF && cmake --build --preset release
+#12 CACHED
+
+#13 [build 4/5] COPY src/ src/
+#13 CACHED
+
+#14 [runtime 1/5] RUN apt-get update -o APT::Update::Error-Mode=any && apt-get install -y --no-install-recommends libstdc++6 libssl3 ca-certificates && rm -rf /var/lib/apt/lists/* && groupadd --system --gid 10001 proxyuser && useradd --system --uid 10001 --gid 10001 --home /var/lib/zt-proxy proxyuser && mkdir -p /var/lib/zt-proxy /etc/zt-proxy && chown 10001:10001 /var/lib/zt-proxy
+#14 CACHED
+
+#15 [build 2/5] WORKDIR /source
+#15 CACHED
+
+#16 [build 3/5] COPY CMakeLists.txt CMakePresets.json ./
+#16 CACHED
+
+#17 [runtime 3/5] COPY config/zt-proxy.json /etc/zt-proxy/config.json
+#17 CACHED
+
+#18 [base 2/3] COPY --from=certificates /etc/ssl/cert.pem /etc/ssl/certs/ca-certificates.crt
+#18 CACHED
+
+#19 [runtime 5/5] WORKDIR /var/lib/zt-proxy
+#19 CACHED
+
+#20 exporting to image
+#20 exporting layers done
+#20 exporting manifest sha256:e1a28cc6b96bc047b6f85f504ca15cd9e0b363083c25cd3390943c9e0004f1a7 done
+#20 exporting config sha256:2771f20c3a0ced40b1572e38703fc0126b151c19ce56b6fdc06d0eca012c0b65 done
+#20 exporting attestation manifest sha256:83492f1f8bfcdfe1f3c64d0570579b41b5606de5e0db79a69cd84459e691895d
+#20 exporting attestation manifest sha256:83492f1f8bfcdfe1f3c64d0570579b41b5606de5e0db79a69cd84459e691895d 0.0s done
+#20 exporting manifest list sha256:77d9d0d0adc9ffb5485f7811c93cda47478538b38e9a838a36ac0fb7419d7e56 0.0s done
+#20 naming to docker.io/library/zt-proxy:local done
+#20 unpacking to docker.io/library/zt-proxy:local 0.0s done
+#20 DONE 0.1s
+WARNING: current commit information was not captured by the build: failed to read current commit information with git rev-parse --is-inside-work-tree
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+Creating cluster "zt-proxy-ci" ...
+ • Ensuring node image (kindest/node:v1.36.4) 🖼️  ...
+ ✓ Ensuring node image (kindest/node:v1.36.4) 🖼️
+ • Preparing nodes 📦   ...
+ ✗ Preparing nodes 📦 
+Deleted nodes: ["zt-proxy-ci-control-plane"]
+ERROR: failed to create cluster: could not find a log line that matches "Reached target .*Multi-User System.*|detected cgroup v1"
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+ERROR: unknown cluster "zt-proxy-ci"
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+Deleting cluster "zt-proxy-ci" ...

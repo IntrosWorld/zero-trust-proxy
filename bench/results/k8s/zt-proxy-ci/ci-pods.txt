@@ -1,0 +1,21 @@
+NAMESPACE            NAME                                                READY   STATUS    RESTARTS   AGE     IP              NODE                        NOMINATED NODE   READINESS GATES
+apps                 zt-client-99888bd9b-lbjsc                           1/1     Running   0          2m21s   10.244.50.204   zt-proxy-ci-control-plane   <none>           <none>
+calico-system        calico-kube-controllers-5875bfdbb8-j6qvv            1/1     Running   0          6m30s   10.244.50.197   zt-proxy-ci-control-plane   <none>           <none>
+calico-system        calico-node-2w84r                                   1/1     Running   0          4m53s   172.18.0.5      zt-proxy-ci-control-plane   <none>           <none>
+calico-system        calico-typha-fd7f9f9c-57n49                         1/1     Running   0          6m30s   172.18.0.5      zt-proxy-ci-control-plane   <none>           <none>
+calico-system        csi-node-driver-gtz2p                               2/2     Running   0          6m30s   10.244.50.193   zt-proxy-ci-control-plane   <none>           <none>
+kube-system          coredns-589f44dc88-gd5jt                            1/1     Running   0          7m47s   10.244.50.196   zt-proxy-ci-control-plane   <none>           <none>
+kube-system          coredns-589f44dc88-hlwc5                            1/1     Running   0          7m47s   10.244.50.195   zt-proxy-ci-control-plane   <none>           <none>
+kube-system          etcd-zt-proxy-ci-control-plane                      1/1     Running   0          7m54s   172.18.0.5      zt-proxy-ci-control-plane   <none>           <none>
+kube-system          kube-apiserver-zt-proxy-ci-control-plane            1/1     Running   0          7m54s   172.18.0.5      zt-proxy-ci-control-plane   <none>           <none>
+kube-system          kube-controller-manager-zt-proxy-ci-control-plane   1/1     Running   0          7m55s   172.18.0.5      zt-proxy-ci-control-plane   <none>           <none>
+kube-system          kube-proxy-85jrm                                    1/1     Running   0          7m47s   172.18.0.5      zt-proxy-ci-control-plane   <none>           <none>
+kube-system          kube-scheduler-zt-proxy-ci-control-plane            1/1     Running   0          7m54s   172.18.0.5      zt-proxy-ci-control-plane   <none>           <none>
+local-path-storage   local-path-provisioner-56c4685b7c-pd58r             1/1     Running   0          7m47s   10.244.50.194   zt-proxy-ci-control-plane   <none>           <none>
+tigera-operator      tigera-operator-686489b657-jccpk                    1/1     Running   0          7m44s   172.18.0.5      zt-proxy-ci-control-plane   <none>           <none>
+zt-system            redis-fbbc7994-9bmcg                                1/1     Running   0          2m34s   10.244.50.200   zt-proxy-ci-control-plane   <none>           <none>
+zt-system            zt-admin-568b595958-d4fv8                           1/1     Running   0          2m21s   10.244.50.205   zt-proxy-ci-control-plane   <none>           <none>
+zt-system            zt-policy-5bcb8c86fb-r9kt4                          1/1     Running   0          4s      10.244.50.234   zt-proxy-ci-control-plane   <none>           <none>
+zt-system            zt-proxy-8555d4658c-lm4nv                           1/1     Running   0          24s     10.244.50.232   zt-proxy-ci-control-plane   <none>           <none>
+zt-system            zt-proxy-8555d4658c-mbgqn                           1/1     Running   0          21s     10.244.50.233   zt-proxy-ci-control-plane   <none>           <none>
+zt-system            zt-proxy-8555d4658c-nsl8p                           1/1     Running   0          28s     10.244.50.231   zt-proxy-ci-control-plane   <none>           <none>

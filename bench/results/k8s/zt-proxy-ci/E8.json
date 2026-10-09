@@ -1,0 +1,14 @@
+{
+  "experiment": "E8",
+  "started": 1791545935.0652575,
+  "passed": true,
+  "direct_exit_code": 28,
+  "proxy": {
+    "exit_code": 0,
+    "bytes": 577,
+    "stderr": ""
+  },
+  "cni": "Calico v3.33.0",
+  "negative_case": "same apps pod direct HTTPS denied; authenticated proxied HTTPS succeeds",
+  "duration_seconds": 5.721354722976685
+}

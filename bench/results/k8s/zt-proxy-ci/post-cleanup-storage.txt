@@ -1,0 +1,11 @@
+Filesystem       1B-blocks        Used  Available Use% Mounted on
+/dev/sda2      97821933568 85886386176 6919221248  93% /
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          10        1         1.594GB   96.18MB (6%)
+Containers      4         4         1.787GB   0B (0%)
+Local Volumes   4         4         7.336GB   0B (0%)
+Build Cache     24        0         272.5MB   0B
+zt-proxy-worker Up 2 hours
+zt-proxy-control-plane Up 2 hours
+zt-proxy-worker2 Up 2 hours
+zt-proxy-proxy-1 Up 2 hours (healthy)

@@ -1,0 +1,561 @@
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.70kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:22.04
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/alpine:3.22
+#3 DONE 1.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 384B done
+#4 DONE 0.0s
+
+#5 [certificates 1/1] FROM docker.io/library/alpine:3.22@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8
+#5 resolve docker.io/library/alpine:3.22@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8 0.1s done
+#5 DONE 0.1s
+
+#6 [base 1/3] FROM docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401
+#6 resolve docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401 0.1s done
+#6 DONE 0.1s
+
+#7 [internal] load build context
+#7 transferring context: 2.24kB done
+#7 DONE 0.0s
+
+#8 [build 4/5] COPY src/ src/
+#8 CACHED
+
+#9 [build 5/5] RUN cmake --preset release -DBUILD_TESTING=OFF && cmake --build --preset release
+#9 CACHED
+
+#10 [runtime 3/5] COPY config/zt-proxy.json /etc/zt-proxy/config.json
+#10 CACHED
+
+#11 [base 2/3] COPY --from=certificates /etc/ssl/cert.pem /etc/ssl/certs/ca-certificates.crt
+#11 CACHED
+
+#12 [base 3/3] RUN sed -i 's|http://|https://|g' /etc/apt/sources.list
+#12 CACHED
+
+#13 [runtime 2/5] COPY --from=build /source/build/release/zt-proxy /usr/local/bin/zt-proxy
+#13 CACHED
+
+#14 [runtime 4/5] COPY --chmod=755 deploy/healthcheck.sh /usr/local/bin/zt-healthcheck
+#14 CACHED
+
+#15 [build 1/5] RUN apt-get update -o APT::Update::Error-Mode=any && apt-get install -y --no-install-recommends build-essential cmake libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
+#15 CACHED
+
+#16 [runtime 1/5] RUN apt-get update -o APT::Update::Error-Mode=any && apt-get install -y --no-install-recommends libstdc++6 libssl3 ca-certificates && rm -rf /var/lib/apt/lists/* && groupadd --system --gid 10001 proxyuser && useradd --system --uid 10001 --gid 10001 --home /var/lib/zt-proxy proxyuser && mkdir -p /var/lib/zt-proxy /etc/zt-proxy && chown 10001:10001 /var/lib/zt-proxy
+#16 CACHED
+
+#17 [build 2/5] WORKDIR /source
+#17 CACHED
+
+#18 [build 3/5] COPY CMakeLists.txt CMakePresets.json ./
+#18 CACHED
+
+#19 [runtime 5/5] WORKDIR /var/lib/zt-proxy
+#19 CACHED
+
+#20 exporting to image
+#20 exporting layers done
+#20 exporting manifest sha256:e1a28cc6b96bc047b6f85f504ca15cd9e0b363083c25cd3390943c9e0004f1a7 done
+#20 exporting config sha256:2771f20c3a0ced40b1572e38703fc0126b151c19ce56b6fdc06d0eca012c0b65 done
+#20 exporting attestation manifest sha256:b46ff5de3a8b912e8a59935552a6a7c49548ca3fc5678356a5faa1b4f9c1e628 0.0s done
+#20 exporting manifest list sha256:0d4ebdbde22c90599ccfc1afd364e23fbb5044d400a01d207449710bca1f0072 0.0s done
+#20 naming to docker.io/library/zt-proxy:local
+#20 naming to docker.io/library/zt-proxy:local done
+#20 unpacking to docker.io/library/zt-proxy:local 0.0s done
+#20 DONE 0.1s
+WARNING: current commit information was not captured by the build: failed to read current commit information with git rev-parse --is-inside-work-tree
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+Creating cluster "zt-proxy-ci" ...
+ • Ensuring node image (kindest/node:v1.36.4) 🖼️  ...
+ ✓ Ensuring node image (kindest/node:v1.36.4) 🖼️
+ • Preparing nodes 📦   ...
+ ✓ Preparing nodes 📦 
+ • Writing configuration 📜  ...
+ ✓ Writing configuration 📜
+ • Starting control-plane 🕹️  ...
+ ✓ Starting control-plane 🕹️
+ • Installing StorageClass 💾  ...
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-zt-proxy-ci"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-zt-proxy-ci
+
+Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
+customresourcedefinition.apiextensions.k8s.io/apiservers.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/gatewayapis.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/goldmanes.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/imagesets.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/installations.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/istios.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/managementclusterconnections.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/tigerastatuses.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/whiskers.operator.tigera.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/bgpfilters.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/bgppeers.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/blockaffinities.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/caliconodestatuses.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/clusterinformations.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/felixconfigurations.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/globalnetworkpolicies.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/globalnetworksets.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/hostendpoints.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/ipamblocks.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/ipamconfigs.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/ipamhandles.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/ippools.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/ipreservations.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/kubecontrollersconfigurations.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/networkpolicies.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/networksets.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/stagedglobalnetworkpolicies.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/stagedkubernetesnetworkpolicies.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/stagednetworkpolicies.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/tiers.crd.projectcalico.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/clusternetworkpolicies.policy.networking.k8s.io serverside-applied
+namespace/tigera-operator serverside-applied
+serviceaccount/tigera-operator serverside-applied
+clusterrole.rbac.authorization.k8s.io/tigera-operator-secrets serverside-applied
+clusterrole.rbac.authorization.k8s.io/tigera-operator serverside-applied
+clusterrolebinding.rbac.authorization.k8s.io/tigera-operator serverside-applied
+rolebinding.rbac.authorization.k8s.io/tigera-operator-secrets serverside-applied
+deployment.apps/tigera-operator serverside-applied
+installation.operator.tigera.io/default created
+node/zt-proxy-ci-control-plane condition met
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+Image: "zt-proxy:local" with ID "sha256:0d4ebdbde22c90599ccfc1afd364e23fbb5044d400a01d207449710bca1f0072" not yet present on node "zt-proxy-ci-control-plane", loading...
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.70kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:22.04
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/alpine:3.22
+#3 DONE 2.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 384B done
+#4 DONE 0.0s
+
+#5 [certificates 1/1] FROM docker.io/library/alpine:3.22@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8
+#5 resolve docker.io/library/alpine:3.22@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8 0.1s done
+#5 DONE 0.1s
+
+#6 [base 1/3] FROM docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401
+#6 resolve docker.io/library/ubuntu:22.04@sha256:5ec03bb3441e8b0bf3b4f9cd4629a1ae763010dc3035bb8da3ae6cf026486401 0.1s done
+#6 DONE 0.1s
+
+#7 [internal] load build context
+#7 transferring context: 2.24kB done
+#7 DONE 0.0s
+
+#8 [runtime 4/5] COPY --chmod=755 deploy/healthcheck.sh /usr/local/bin/zt-healthcheck
+#8 CACHED
+
+#9 [base 2/3] COPY --from=certificates /etc/ssl/cert.pem /etc/ssl/certs/ca-certificates.crt
+#9 CACHED
+
+#10 [build 2/5] WORKDIR /source
+#10 CACHED
+
+#11 [build 3/5] COPY CMakeLists.txt CMakePresets.json ./
+#11 CACHED
+
+#12 [runtime 2/5] COPY --from=build /source/build/release/zt-proxy /usr/local/bin/zt-proxy
+#12 CACHED
+
+#13 [build 1/5] RUN apt-get update -o APT::Update::Error-Mode=any && apt-get install -y --no-install-recommends build-essential cmake libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
+#13 CACHED
+
+#14 [build 4/5] COPY src/ src/
+#14 CACHED
+
+#15 [build 5/5] RUN cmake --preset release -DBUILD_TESTING=OFF && cmake --build --preset release
+#15 CACHED
+
+#16 [runtime 3/5] COPY config/zt-proxy.json /etc/zt-proxy/config.json
+#16 CACHED
+
+#17 [base 3/3] RUN sed -i 's|http://|https://|g' /etc/apt/sources.list
+#17 CACHED
+
+#18 [runtime 1/5] RUN apt-get update -o APT::Update::Error-Mode=any && apt-get install -y --no-install-recommends libstdc++6 libssl3 ca-certificates && rm -rf /var/lib/apt/lists/* && groupadd --system --gid 10001 proxyuser && useradd --system --uid 10001 --gid 10001 --home /var/lib/zt-proxy proxyuser && mkdir -p /var/lib/zt-proxy /etc/zt-proxy && chown 10001:10001 /var/lib/zt-proxy
+#18 CACHED
+
+#19 [runtime 5/5] WORKDIR /var/lib/zt-proxy
+#19 CACHED
+
+#20 exporting to image
+#20 exporting layers done
+#20 exporting manifest sha256:e1a28cc6b96bc047b6f85f504ca15cd9e0b363083c25cd3390943c9e0004f1a7 done
+#20 exporting config sha256:2771f20c3a0ced40b1572e38703fc0126b151c19ce56b6fdc06d0eca012c0b65 done
+#20 exporting attestation manifest sha256:8d3a7c2a18cf2f8092a36cff9a59a3cfe82f10620a046cd4ad886aa72232faeb 0.0s done
+#20 exporting manifest list sha256:3bb69d50d744a332167c3ea7637cac3ba578dff69dfda9d395f6eb5760dfdd17
+#20 exporting manifest list sha256:3bb69d50d744a332167c3ea7637cac3ba578dff69dfda9d395f6eb5760dfdd17 0.0s done
+#20 naming to docker.io/library/zt-proxy:kubernetes done
+#20 unpacking to docker.io/library/zt-proxy:kubernetes 0.0s done
+#20 DONE 0.1s
+WARNING: current commit information was not captured by the build: failed to read current commit information with git rev-parse --is-inside-work-tree
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 457B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/zt-proxy:kubernetes
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 384B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/zt-proxy:kubernetes@sha256:3bb69d50d744a332167c3ea7637cac3ba578dff69dfda9d395f6eb5760dfdd17
+#5 resolve docker.io/library/zt-proxy:kubernetes@sha256:3bb69d50d744a332167c3ea7637cac3ba578dff69dfda9d395f6eb5760dfdd17 0.0s done
+#5 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 11.67kB done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/zt-proxy:kubernetes@sha256:3bb69d50d744a332167c3ea7637cac3ba578dff69dfda9d395f6eb5760dfdd17
+#5 DONE 0.1s
+
+#6 [2/4] RUN apt-get update -o APT::Update::Error-Mode=any && apt-get install -y --no-install-recommends python3 && rm -rf /var/lib/apt/lists/* && mkdir -p /data && chown 10001:10001 /data
+#6 1.974 Get:1 https://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+#6 1.995 Get:2 https://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+#6 3.402 Get:3 https://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [4429 kB]
+#6 4.461 Get:4 https://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+#6 4.672 Get:5 https://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+#6 5.201 Get:6 https://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+#6 6.272 Get:7 https://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [96.8 kB]
+#6 6.280 Get:8 https://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [7955 kB]
+#6 7.778 Get:9 https://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1323 kB]
+#6 18.87 Get:10 https://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+#6 18.89 Get:11 https://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+#6 19.14 Get:12 https://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1792 kB]
+#6 19.47 Get:13 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [4757 kB]
+#6 21.72 Get:14 https://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [104 kB]
+#6 21.78 Get:15 https://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [8243 kB]
+#6 24.25 Get:16 https://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1624 kB]
+#6 24.74 Get:17 https://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [35.6 kB]
+#6 24.74 Get:18 https://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [82.9 kB]
+#6 24.82 Fetched 49.0 MB in 24s (2007 kB/s)
+#6 24.82 Reading package lists...
+#6 25.83 Reading package lists...
+#6 26.81 Building dependency tree...
+#6 27.02 Reading state information...
+#6 27.21 The following additional packages will be installed:
+#6 27.21   libexpat1 libmpdec3 libpython3-stdlib libpython3.10-minimal
+#6 27.21   libpython3.10-stdlib libreadline8 libsqlite3-0 media-types python3-minimal
+#6 27.21   python3.10 python3.10-minimal readline-common
+#6 27.21 Suggested packages:
+#6 27.21   python3-doc python3-tk python3-venv python3.10-venv python3.10-doc binutils
+#6 27.21   binfmt-support readline-doc
+#6 27.28 The following NEW packages will be installed:
+#6 27.28   libexpat1 libmpdec3 libpython3-stdlib libpython3.10-minimal
+#6 27.28   libpython3.10-stdlib libreadline8 libsqlite3-0 media-types python3
+#6 27.28   python3-minimal python3.10 python3.10-minimal readline-common
+#6 29.01 0 upgraded, 13 newly installed, 0 to remove and 0 not upgraded.
+#6 29.01 Need to get 6564 kB of archives.
+#6 29.01 After this operation, 23.6 MB of additional disk space will be used.
+#6 29.01 Get:1 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3.10-minimal amd64 3.10.12-1~22.04.18 [817 kB]
+#6 31.02 Get:2 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libexpat1 amd64 2.4.7-1ubuntu0.9 [96.9 kB]
+#6 31.04 Get:3 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3.10-minimal amd64 3.10.12-1~22.04.18 [2277 kB]
+#6 31.60 Get:4 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3-minimal amd64 3.10.6-1~22.04.1 [24.3 kB]
+#6 31.60 Get:5 https://archive.ubuntu.com/ubuntu jammy/main amd64 media-types all 7.0.0 [25.5 kB]
+#6 31.60 Get:6 https://archive.ubuntu.com/ubuntu jammy/main amd64 libmpdec3 amd64 2.5.1-2build2 [86.8 kB]
+#6 31.63 Get:7 https://archive.ubuntu.com/ubuntu jammy/main amd64 readline-common all 8.1.2-1 [53.5 kB]
+#6 31.64 Get:8 https://archive.ubuntu.com/ubuntu jammy/main amd64 libreadline8 amd64 8.1.2-1 [153 kB]
+#6 31.66 Get:9 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsqlite3-0 amd64 3.37.2-2ubuntu0.8 [642 kB]
+#6 31.73 Get:10 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3.10-stdlib amd64 3.10.12-1~22.04.18 [1850 kB]
+#6 32.11 Get:11 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3.10 amd64 3.10.12-1~22.04.18 [508 kB]
+#6 32.20 Get:12 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpython3-stdlib amd64 3.10.6-1~22.04.1 [6812 B]
+#6 32.20 Get:13 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 python3 amd64 3.10.6-1~22.04.1 [22.8 kB]
+#6 32.34 debconf: delaying package configuration, since apt-utils is not installed
+#6 32.37 Fetched 6564 kB in 5s (1338 kB/s)
+#6 32.42 Selecting previously unselected package libpython3.10-minimal:amd64.
+#6 32.42 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 4844 files and directories currently installed.)
+#6 32.45 Preparing to unpack .../libpython3.10-minimal_3.10.12-1~22.04.18_amd64.deb ...
+#6 32.45 Unpacking libpython3.10-minimal:amd64 (3.10.12-1~22.04.18) ...
+#6 32.55 Selecting previously unselected package libexpat1:amd64.
+#6 32.55 Preparing to unpack .../libexpat1_2.4.7-1ubuntu0.9_amd64.deb ...
+#6 32.57 Unpacking libexpat1:amd64 (2.4.7-1ubuntu0.9) ...
+#6 32.64 Selecting previously unselected package python3.10-minimal.
+#6 32.64 Preparing to unpack .../python3.10-minimal_3.10.12-1~22.04.18_amd64.deb ...
+#6 32.65 Unpacking python3.10-minimal (3.10.12-1~22.04.18) ...
+#6 32.73 Setting up libpython3.10-minimal:amd64 (3.10.12-1~22.04.18) ...
+#6 32.76 Setting up libexpat1:amd64 (2.4.7-1ubuntu0.9) ...
+#6 32.79 Setting up python3.10-minimal (3.10.12-1~22.04.18) ...
+#6 33.32 Selecting previously unselected package python3-minimal.
+#6 33.32 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5148 files and directories currently installed.)
+#6 33.32 Preparing to unpack .../0-python3-minimal_3.10.6-1~22.04.1_amd64.deb ...
+#6 33.33 Unpacking python3-minimal (3.10.6-1~22.04.1) ...
+#6 33.38 Selecting previously unselected package media-types.
+#6 33.38 Preparing to unpack .../1-media-types_7.0.0_all.deb ...
+#6 33.39 Unpacking media-types (7.0.0) ...
+#6 33.46 Selecting previously unselected package libmpdec3:amd64.
+#6 33.46 Preparing to unpack .../2-libmpdec3_2.5.1-2build2_amd64.deb ...
+#6 33.47 Unpacking libmpdec3:amd64 (2.5.1-2build2) ...
+#6 33.53 Selecting previously unselected package readline-common.
+#6 33.53 Preparing to unpack .../3-readline-common_8.1.2-1_all.deb ...
+#6 33.54 Unpacking readline-common (8.1.2-1) ...
+#6 33.60 Selecting previously unselected package libreadline8:amd64.
+#6 33.60 Preparing to unpack .../4-libreadline8_8.1.2-1_amd64.deb ...
+#6 33.60 Unpacking libreadline8:amd64 (8.1.2-1) ...
+#6 33.67 Selecting previously unselected package libsqlite3-0:amd64.
+#6 33.67 Preparing to unpack .../5-libsqlite3-0_3.37.2-2ubuntu0.8_amd64.deb ...
+#6 33.68 Unpacking libsqlite3-0:amd64 (3.37.2-2ubuntu0.8) ...
+#6 33.74 Selecting previously unselected package libpython3.10-stdlib:amd64.
+#6 33.74 Preparing to unpack .../6-libpython3.10-stdlib_3.10.12-1~22.04.18_amd64.deb ...
+#6 33.75 Unpacking libpython3.10-stdlib:amd64 (3.10.12-1~22.04.18) ...
+#6 33.85 Selecting previously unselected package python3.10.
+#6 33.85 Preparing to unpack .../7-python3.10_3.10.12-1~22.04.18_amd64.deb ...
+#6 33.86 Unpacking python3.10 (3.10.12-1~22.04.18) ...
+#6 33.91 Selecting previously unselected package libpython3-stdlib:amd64.
+#6 33.91 Preparing to unpack .../8-libpython3-stdlib_3.10.6-1~22.04.1_amd64.deb ...
+#6 33.92 Unpacking libpython3-stdlib:amd64 (3.10.6-1~22.04.1) ...
+#6 33.97 Setting up python3-minimal (3.10.6-1~22.04.1) ...
+#6 34.17 Selecting previously unselected package python3.
+#6 34.17 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5578 files and directories currently installed.)
+#6 34.17 Preparing to unpack .../python3_3.10.6-1~22.04.1_amd64.deb ...
+#6 34.18 Unpacking python3 (3.10.6-1~22.04.1) ...
+#6 34.24 Setting up media-types (7.0.0) ...
+#6 34.28 Setting up libsqlite3-0:amd64 (3.37.2-2ubuntu0.8) ...
+#6 34.30 Setting up libmpdec3:amd64 (2.5.1-2build2) ...
+#6 34.33 Setting up readline-common (8.1.2-1) ...
+#6 34.36 Setting up libreadline8:amd64 (8.1.2-1) ...
+#6 34.39 Setting up libpython3.10-stdlib:amd64 (3.10.12-1~22.04.18) ...
+#6 34.41 Setting up libpython3-stdlib:amd64 (3.10.6-1~22.04.1) ...
+#6 34.44 Setting up python3.10 (3.10.12-1~22.04.18) ...
+#6 34.99 Setting up python3 (3.10.6-1~22.04.1) ...
+#6 35.01 running python rtupdate hooks for python3.10...
+#6 35.01 running python post-rtupdate hooks for python3.10...
+#6 35.09 Processing triggers for libc-bin (2.35-0ubuntu3.15) ...
+#6 DONE 35.4s
+
+#7 [3/4] COPY control-plane/server.py /opt/zt-policy/server.py
+#7 DONE 0.1s
+
+#8 [4/4] WORKDIR /data
+#8 DONE 0.1s
+
+#9 exporting to image
+#9 exporting layers
+#9 exporting layers 1.5s done
+#9 exporting manifest sha256:2a8b3262eb93885a225d750ae1a07904c168d2d5125771a9d4488ff322c2d0cd 0.0s done
+#9 exporting config sha256:d145baaad0a67aedd94cd25c3fcdea8e3b0d93dc58993aa897a9ce50a838b921 0.0s done
+#9 exporting attestation manifest sha256:7e040110b8eb8ac3aae70f61fa79045d3e5e60d4b4e80c83326882029b00cb14 0.0s done
+#9 exporting manifest list sha256:86236ef3e90690230d445abd6a34fae3dcd7cb3070c3e3aa25b2026e6a1d3430
+#9 exporting manifest list sha256:86236ef3e90690230d445abd6a34fae3dcd7cb3070c3e3aa25b2026e6a1d3430 0.0s done
+#9 naming to docker.io/library/zt-policy:kubernetes done
+#9 unpacking to docker.io/library/zt-policy:kubernetes
+#9 unpacking to docker.io/library/zt-policy:kubernetes 0.3s done
+#9 DONE 2.0s
+WARNING: current commit information was not captured by the build: failed to read current commit information with git rev-parse --is-inside-work-tree
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 344B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/zt-policy:kubernetes
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 384B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 3.39kB done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/zt-policy:kubernetes@sha256:86236ef3e90690230d445abd6a34fae3dcd7cb3070c3e3aa25b2026e6a1d3430
+#5 resolve docker.io/library/zt-policy:kubernetes@sha256:86236ef3e90690230d445abd6a34fae3dcd7cb3070c3e3aa25b2026e6a1d3430 0.0s done
+#5 DONE 0.2s
+
+#6 [2/4] RUN apt-get update -o APT::Update::Error-Mode=any && apt-get install -y --no-install-recommends curl wrk && rm -rf /var/lib/apt/lists/*
+#6 1.370 Get:1 https://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+#6 1.679 Get:2 https://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+#6 2.874 Get:3 https://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+#6 3.196 Get:4 https://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+#6 3.496 Get:5 https://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+#6 4.064 Get:6 https://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [96.8 kB]
+#6 5.289 Get:7 https://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1323 kB]
+#6 6.181 Get:8 https://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1792 kB]
+#6 6.315 Get:9 https://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+#6 6.336 Get:10 https://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+#6 6.350 Get:11 https://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [8243 kB]
+#6 7.005 Get:12 https://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [7955 kB]
+#6 7.903 Get:13 https://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1624 kB]
+#6 8.038 Get:14 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [4757 kB]
+#6 8.661 Get:15 https://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [104 kB]
+#6 8.661 Get:16 https://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [35.6 kB]
+#6 8.671 Get:17 https://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [82.9 kB]
+#6 10.11 Get:18 https://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [4429 kB]
+#6 11.32 Fetched 49.0 MB in 11s (4410 kB/s)
+#6 11.32 Reading package lists...
+#6 12.35 Reading package lists...
+#6 13.42 Building dependency tree...
+#6 13.64 Reading state information...
+#6 13.86 The following additional packages will be installed:
+#6 13.86   libbrotli1 libcurl4 libldap-2.5-0 libluajit-5.1-2 libluajit-5.1-common
+#6 13.86   libnghttp2-14 libpsl5 librtmp1 libsasl2-2 libsasl2-modules-db libssh-4
+#6 13.86 Recommended packages:
+#6 13.86   libldap-common publicsuffix libsasl2-modules
+#6 13.92 The following NEW packages will be installed:
+#6 13.93   curl libbrotli1 libcurl4 libldap-2.5-0 libluajit-5.1-2 libluajit-5.1-common
+#6 13.93   libnghttp2-14 libpsl5 librtmp1 libsasl2-2 libsasl2-modules-db libssh-4 wrk
+#6 15.09 0 upgraded, 13 newly installed, 0 to remove and 0 not upgraded.
+#6 15.09 Need to get 1792 kB of archives.
+#6 15.09 After this operation, 4775 kB of additional disk space will be used.
+#6 15.09 Get:1 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnghttp2-14 amd64 1.43.0-1ubuntu0.4 [76.9 kB]
+#6 16.01 Get:2 https://archive.ubuntu.com/ubuntu jammy/main amd64 libpsl5 amd64 0.21.0-1.2build2 [58.4 kB]
+#6 16.32 Get:3 https://archive.ubuntu.com/ubuntu jammy/main amd64 libbrotli1 amd64 1.0.9-2build6 [315 kB]
+#6 17.25 Get:4 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsasl2-modules-db amd64 2.1.27+dfsg2-3ubuntu1.2 [20.5 kB]
+#6 17.25 Get:5 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsasl2-2 amd64 2.1.27+dfsg2-3ubuntu1.2 [53.8 kB]
+#6 17.25 Get:6 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libldap-2.5-0 amd64 2.5.20+dfsg-0ubuntu0.22.04.1 [184 kB]
+#6 17.71 Get:7 https://archive.ubuntu.com/ubuntu jammy/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2build4 [58.2 kB]
+#6 17.71 Get:8 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libssh-4 amd64 0.9.6-2ubuntu0.22.04.8 [189 kB]
+#6 17.94 Get:9 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libcurl4 amd64 7.81.0-1ubuntu1.29 [292 kB]
+#6 17.96 Get:10 https://archive.ubuntu.com/ubuntu jammy-updates/main amd64 curl amd64 7.81.0-1ubuntu1.29 [194 kB]
+#6 18.06 Get:11 https://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 libluajit-5.1-common all 2.1.0~beta3+dfsg-6ubuntu0.1 [46.6 kB]
+#6 18.09 Get:12 https://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 libluajit-5.1-2 amd64 2.1.0~beta3+dfsg-6ubuntu0.1 [256 kB]
+#6 18.81 Get:13 https://archive.ubuntu.com/ubuntu jammy/universe amd64 wrk amd64 4.1.0-3build1 [47.2 kB]
+#6 18.92 debconf: delaying package configuration, since apt-utils is not installed
+#6 18.95 Fetched 1792 kB in 5s (367 kB/s)
+#6 18.99 Selecting previously unselected package libnghttp2-14:amd64.
+#6 18.99 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5598 files and directories currently installed.)
+#6 18.99 Preparing to unpack .../00-libnghttp2-14_1.43.0-1ubuntu0.4_amd64.deb ...
+#6 19.01 Unpacking libnghttp2-14:amd64 (1.43.0-1ubuntu0.4) ...
+#6 19.07 Selecting previously unselected package libpsl5:amd64.
+#6 19.07 Preparing to unpack .../01-libpsl5_0.21.0-1.2build2_amd64.deb ...
+#6 19.08 Unpacking libpsl5:amd64 (0.21.0-1.2build2) ...
+#6 19.14 Selecting previously unselected package libbrotli1:amd64.
+#6 19.14 Preparing to unpack .../02-libbrotli1_1.0.9-2build6_amd64.deb ...
+#6 19.15 Unpacking libbrotli1:amd64 (1.0.9-2build6) ...
+#6 19.20 Selecting previously unselected package libsasl2-modules-db:amd64.
+#6 19.20 Preparing to unpack .../03-libsasl2-modules-db_2.1.27+dfsg2-3ubuntu1.2_amd64.deb ...
+#6 19.21 Unpacking libsasl2-modules-db:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+#6 19.27 Selecting previously unselected package libsasl2-2:amd64.
+#6 19.27 Preparing to unpack .../04-libsasl2-2_2.1.27+dfsg2-3ubuntu1.2_amd64.deb ...
+#6 19.28 Unpacking libsasl2-2:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+#6 19.34 Selecting previously unselected package libldap-2.5-0:amd64.
+#6 19.34 Preparing to unpack .../05-libldap-2.5-0_2.5.20+dfsg-0ubuntu0.22.04.1_amd64.deb ...
+#6 19.35 Unpacking libldap-2.5-0:amd64 (2.5.20+dfsg-0ubuntu0.22.04.1) ...
+#6 19.41 Selecting previously unselected package librtmp1:amd64.
+#6 19.41 Preparing to unpack .../06-librtmp1_2.4+20151223.gitfa8646d.1-2build4_amd64.deb ...
+#6 19.42 Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build4) ...
+#6 19.49 Selecting previously unselected package libssh-4:amd64.
+#6 19.49 Preparing to unpack .../07-libssh-4_0.9.6-2ubuntu0.22.04.8_amd64.deb ...
+#6 19.50 Unpacking libssh-4:amd64 (0.9.6-2ubuntu0.22.04.8) ...
+#6 19.56 Selecting previously unselected package libcurl4:amd64.
+#6 19.56 Preparing to unpack .../08-libcurl4_7.81.0-1ubuntu1.29_amd64.deb ...
+#6 19.57 Unpacking libcurl4:amd64 (7.81.0-1ubuntu1.29) ...
+#6 19.62 Selecting previously unselected package curl.
+#6 19.62 Preparing to unpack .../09-curl_7.81.0-1ubuntu1.29_amd64.deb ...
+#6 19.63 Unpacking curl (7.81.0-1ubuntu1.29) ...
+#6 19.68 Selecting previously unselected package libluajit-5.1-common.
+#6 19.68 Preparing to unpack .../10-libluajit-5.1-common_2.1.0~beta3+dfsg-6ubuntu0.1_all.deb ...
+#6 19.69 Unpacking libluajit-5.1-common (2.1.0~beta3+dfsg-6ubuntu0.1) ...
+#6 19.76 Selecting previously unselected package libluajit-5.1-2:amd64.
+#6 19.76 Preparing to unpack .../11-libluajit-5.1-2_2.1.0~beta3+dfsg-6ubuntu0.1_amd64.deb ...
+#6 19.77 Unpacking libluajit-5.1-2:amd64 (2.1.0~beta3+dfsg-6ubuntu0.1) ...
+#6 19.83 Selecting previously unselected package wrk.
+#6 19.83 Preparing to unpack .../12-wrk_4.1.0-3build1_amd64.deb ...
+#6 19.84 Unpacking wrk (4.1.0-3build1) ...
+#6 19.90 Setting up libpsl5:amd64 (0.21.0-1.2build2) ...
+#6 19.93 Setting up libbrotli1:amd64 (1.0.9-2build6) ...
+#6 19.95 Setting up libnghttp2-14:amd64 (1.43.0-1ubuntu0.4) ...
+#6 19.98 Setting up libsasl2-modules-db:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+#6 20.00 Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build4) ...
+#6 20.03 Setting up libluajit-5.1-common (2.1.0~beta3+dfsg-6ubuntu0.1) ...
+#6 20.06 Setting up libsasl2-2:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+#6 20.08 Setting up libssh-4:amd64 (0.9.6-2ubuntu0.22.04.8) ...
+#6 20.11 Setting up libluajit-5.1-2:amd64 (2.1.0~beta3+dfsg-6ubuntu0.1) ...
+#6 20.14 Setting up libldap-2.5-0:amd64 (2.5.20+dfsg-0ubuntu0.22.04.1) ...
+#6 20.16 Setting up wrk (4.1.0-3build1) ...
+#6 20.19 Setting up libcurl4:amd64 (7.81.0-1ubuntu1.29) ...
+#6 20.22 Setting up curl (7.81.0-1ubuntu1.29) ...
+#6 20.24 Processing triggers for libc-bin (2.35-0ubuntu3.15) ...
+#6 DONE 20.4s
+
+#7 [3/4] COPY bench/k8s/client.py /opt/client.py
+#7 DONE 0.1s
+
+#8 [4/4] COPY bench/k8s/wrk.lua /opt/wrk.lua
+#8 DONE 0.1s
+
+#9 exporting to image
+#9 exporting layers
+#9 exporting layers 0.4s done
+#9 exporting manifest sha256:e55e200a8262e25af5ed2e758401aff077716c24a2ed910138f5b0144e18ad93 0.0s done
+#9 exporting config sha256:1c68956cbdcaaab98fb738cc91a390202d3f537c1f34175ea7c062dce76ec355 0.0s done
+#9 exporting attestation manifest sha256:2b103c1b24500cab2db3ca132fc51dae23720b276027c509bb72df0548910611 0.0s done
+#9 exporting manifest list sha256:d70e1e44baea714ad06ba64832006d4a9cbd0dd93eadf9bcb84c88d2ce87c693
+#9 exporting manifest list sha256:d70e1e44baea714ad06ba64832006d4a9cbd0dd93eadf9bcb84c88d2ce87c693 0.0s done
+#9 naming to docker.io/library/zt-client:kubernetes done
+#9 unpacking to docker.io/library/zt-client:kubernetes 0.1s done
+#9 DONE 0.7s
+WARNING: current commit information was not captured by the build: failed to read current commit information with git rev-parse --is-inside-work-tree
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+Image: "zt-proxy:kubernetes" with ID "sha256:3bb69d50d744a332167c3ea7637cac3ba578dff69dfda9d395f6eb5760dfdd17" not yet present on node "zt-proxy-ci-control-plane", loading...
+Image: "zt-proxy:kubernetes-next" with ID "sha256:3bb69d50d744a332167c3ea7637cac3ba578dff69dfda9d395f6eb5760dfdd17" not yet present on node "zt-proxy-ci-control-plane", loading...
+Image: "zt-policy:kubernetes" with ID "sha256:86236ef3e90690230d445abd6a34fae3dcd7cb3070c3e3aa25b2026e6a1d3430" not yet present on node "zt-proxy-ci-control-plane", loading...
+Image: "zt-policy:kubernetes-next" with ID "sha256:86236ef3e90690230d445abd6a34fae3dcd7cb3070c3e3aa25b2026e6a1d3430" not yet present on node "zt-proxy-ci-control-plane", loading...
+Image: "zt-client:kubernetes" with ID "sha256:d70e1e44baea714ad06ba64832006d4a9cbd0dd93eadf9bcb84c88d2ce87c693" not yet present on node "zt-proxy-ci-control-plane", loading...
+namespace/zt-system created
+secret/zt-secrets created
+namespace/apps created
+secret/zt-secrets created
+namespace/monitoring created
+secret/zt-secrets created
+Release "zt-proxy" does not exist. Installing it now.
+NAME: zt-proxy
+LAST DEPLOYED: Fri Oct  9 17:06:38 2026
+NAMESPACE: zt-system
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+deployment.apps/zt-client created
+deployment.apps/zt-admin created
+Waiting for deployment "zt-client" rollout to finish: 0 of 1 updated replicas are available...
+deployment "zt-client" successfully rolled out
+Waiting for deployment "zt-admin" rollout to finish: 0 of 1 updated replicas are available...
+deployment "zt-admin" successfully rolled out
+Running E1
+{"experiment": "E1", "started": 1791545813.6341972, "passed": true, "load": {"requests": 15020, "statuses": {"403": 15020}, "expected_status": 403, "failed_requests": 0, "elapsed_seconds": 12.015638685999875, "requests_per_second": 1250.0375878895795, "p50_ms": 10.50312750021476, "p99_ms": 61.51330000011512, "workload": "policy decisions for a denied destination; no origin traffic"}, "replacement_ready_seconds": 2.5080809689998205, "method": "graceful Kubernetes pod deletion", "duration_seconds": 12.783783435821533}
+Running E2
+{"experiment": "E2", "started": 1791545826.4187326, "passed": true, "polling": {"samples_ms": [755.6258650001837, 857.4620890003644, 916.0043470001256], "p50_ms": 857.4620890003644, "max_ms": 916.0043470001256, "replicas": 3, "poll_interval_ms": 200, "includes": "API write + kubectl exec observations + every-pod deny probes + rollout read"}, "long_poll": {"samples_ms": [709.9969740002052, 717.5336759992206, 835.2202159994704], "p50_ms": 717.5336759992206, "max_ms": 835.2202159994704, "replicas": 3, "poll_interval_ms": 200, "includes": "API write + kubectl exec observations + every-pod deny probes + rollout read"}, "duration_seconds": 27.835564374923706}
+Running E5
+{"experiment": "E5", "started": 1791545854.254653, "passed": true, "improved": true, "baseline": {"requests": 3855, "statuses": {"403": 3787, "0": 68}, "expected_status": 403, "failed_requests": 68, "elapsed_seconds": 16.204876728000272, "requests_per_second": 237.89134991313927, "p50_ms": 201.81352899999183, "p99_ms": 207.4203399997714, "workload": "policy decisions for a denied destination; no origin traffic"}, "graceful": {"requests": 3828, "statuses": {"403": 3828}, "expected_status": 403, "failed_requests": 0, "elapsed_seconds": 16.20225793100053, "requests_per_second": 236.26336627290138, "p50_ms": 201.83261699958166, "p99_ms": 207.17442900058813, "workload": "policy decisions for a denied destination; no origin traffic"}, "duration_seconds": 80.81025338172913}
+Running E8
+{"experiment": "E8", "started": 1791545935.0652575, "passed": true, "direct_exit_code": 28, "proxy": {"exit_code": 0, "bytes": 577, "stderr": ""}, "cni": "Calico v3.33.0", "negative_case": "same apps pod direct HTTPS denied; authenticated proxied HTTPS succeeds", "duration_seconds": 5.721354722976685}
+Running E9
+{"experiment": "E9", "started": 1791545940.786817, "passed": true, "load": {"requests": 4805, "statuses": {"403": 4805}, "expected_status": 403, "failed_requests": 0, "elapsed_seconds": 2.0039870680002423, "requests_per_second": 2397.720063530579, "p50_ms": 1.580621000357496, "p99_ms": 2.77130899939948, "workload": "policy decisions for a denied destination; no origin traffic"}, "retained_version": 20, "retained_sha256": "6c97117f2447d93c12bac2ff004625a97f340e71a81f3ab4abb7583610cde441", "duration_seconds": 11.073536396026611}
+Running E10
+{"experiment": "E10", "started": 1791545951.8607142, "passed": true, "invalid_put_status": 400, "proxy_rejected": "valid schema, conflicting same version (explicit database fault injection)", "retained_sha256": "6c97117f2447d93c12bac2ff004625a97f340e71a81f3ab4abb7583610cde441", "duration_seconds": 1.4506983757019043}
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+Exporting logs for cluster "zt-proxy-ci" to:
+artifacts/cluster-logs-zt-proxy-ci
+using docker due to KIND_EXPERIMENTAL_PROVIDER
+Deleting cluster "zt-proxy-ci" ...
+Deleted nodes: ["zt-proxy-ci-control-plane"]

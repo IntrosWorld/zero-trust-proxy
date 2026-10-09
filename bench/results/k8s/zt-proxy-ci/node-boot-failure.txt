@@ -1,0 +1,24 @@
+INFO: ensuring we can execute mount/umount even with userns-remap
+INFO: remounting /sys read-only
+INFO: making mounts shared
+INFO: detected cgroup v2
+INFO: clearing and regenerating /etc/machine-id
+Initializing machine ID from random generator.
+INFO: faking /sys/class/dmi/id/product_name to be "kind"
+INFO: faking /sys/class/dmi/id/product_uuid to be random
+INFO: faking /sys/devices/virtual/dmi/id/product_uuid as well
+INFO: setting iptables to detected mode: nft
+INFO: detected IPv4 address: 172.18.0.5
+INFO: detected IPv6 address: fc00:f853:ccd:e793::5
+INFO: starting init
+[!p]104[?7hsystemd 257.13-1~deb13u1 running in system mode (+PAM +AUDIT +SELINUX +APPARMOR +IMA +IPE +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBCRYPTSETUP_PLUGINS +LIBFDISK +PCRE2 +PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD +BPF_FRAMEWORK +BTF -XKBCOMMON -UTMP +SYSVINIT +LIBARCHIVE)
+Detected virtualization docker.
+Detected architecture x86-64.
+
+[0;1;39mWelcome to [0m[1mDebian GNU/Linux 13 (trixie)[0m[0;1;39m![0m
+
+[0;1;31mFailed to create control group inotify object: Too many open files[0m
+[0;1;31mFailed to allocate manager object: Too many open files[0m
+[[0;1;31m!!!!!![0m] Failed to allocate manager object.
+[0;1;31mExiting PID 1...[0m
+INFO: ensuring we can execute mount/umount even with userns-remap

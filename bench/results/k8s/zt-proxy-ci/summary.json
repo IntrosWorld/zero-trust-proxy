@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-10-09T11:40:58.220673+00:00",
+  "harness_source_commit": "f211c1a8b414dbf80930ca94d498a2b9f887f09e",
+  "harness_exit_code": 0,
+  "fixture": "fresh one-node kind cluster with Calico and three proxy replicas",
+  "experiments": {
+    "E1": true,
+    "E2": true,
+    "E5": true,
+    "E8": true,
+    "E9": true,
+    "E10": true
+  },
+  "temporary_cluster_deleted": true,
+  "remaining_clusters": [
+    "zt-proxy"
+  ],
+  "restored_inotify_limits": {
+    "max_user_instances": 128,
+    "max_user_watches": 65536
+  },
+  "original_cluster_nodes_and_kubeconfig_unchanged": true,
+  "original_policy_unchanged": true,
+  "original_proxy_replicas_ready": 3,
+  "hosted_github_actions": "not run; no remote configured"
+}

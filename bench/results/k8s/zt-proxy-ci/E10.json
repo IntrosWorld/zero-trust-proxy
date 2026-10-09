@@ -1,0 +1,9 @@
+{
+  "experiment": "E10",
+  "started": 1791545951.8607142,
+  "passed": true,
+  "invalid_put_status": 400,
+  "proxy_rejected": "valid schema, conflicting same version (explicit database fault injection)",
+  "retained_sha256": "6c97117f2447d93c12bac2ff004625a97f340e71a81f3ab4abb7583610cde441",
+  "duration_seconds": 1.4506983757019043
+}

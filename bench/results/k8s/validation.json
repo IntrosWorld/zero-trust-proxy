@@ -28,7 +28,7 @@
   "experiment_proxy_image_id": "sha256:4ab9919b708c950dfdb36241669e5038eae4c557e67ace38686b75294edded69",
   "experiment_note": "Experiments preceded the final equivalent shared-pointer initialization rewrite; final release/sanitizer suites revalidated that rewrite. E3 is policy decision throughput, not upstream throughput.",
   "hosted_ci": "not run; repository not pushed",
-  "fresh_cluster_harness": "implemented; components exercised locally, complete create/test/delete harness not executed as one run",
+  "fresh_cluster_harness": "passed complete build/create/install/test/export/delete run using the isolated one-node fixture; see zt-proxy-ci/summary.json",
   "final_container_image_id": "sha256:98bd0a8ae223a85e7fb65292bd301272a3849cb158df2c2404c1ab64e72c0abe",
   "container_integration": "46 passed in 33.91s"
 }

@@ -1,0 +1,21 @@
+{
+  "experiment": "E1",
+  "started": 1791545813.6341972,
+  "passed": true,
+  "load": {
+    "requests": 15020,
+    "statuses": {
+      "403": 15020
+    },
+    "expected_status": 403,
+    "failed_requests": 0,
+    "elapsed_seconds": 12.015638685999875,
+    "requests_per_second": 1250.0375878895795,
+    "p50_ms": 10.50312750021476,
+    "p99_ms": 61.51330000011512,
+    "workload": "policy decisions for a denied destination; no origin traffic"
+  },
+  "replacement_ready_seconds": 2.5080809689998205,
+  "method": "graceful Kubernetes pod deletion",
+  "duration_seconds": 12.783783435821533
+}
