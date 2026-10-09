@@ -13,11 +13,18 @@ args=sys.argv[1:]
 command=['docker','run','--rm','--name',f'zt-test-{uuid.uuid4().hex[:12]}',
          '--label',f'zt-proxy.test-run={run_id}','--network','host','--read-only',
          '--cap-drop','ALL','--security-opt','no-new-privileges','--memory','256m','--pids-limit','64']
-if '--config' in args:
-    config=Path(args[args.index('--config')+1]).resolve()
-    config.relative_to(root) # Never relax permissions on paths outside our scratch root.
-    config.parent.chmod(0o777) # Container UID 10001 writes only this disposable log directory.
-    command+=['--mount',f'type=bind,src={config.parent},dst={config.parent}']
+flag = '--config' if '--config' in args else '--validate-policy' if '--validate-policy' in args else None
+if flag:
+    config=Path(args[args.index(flag)+1]).resolve()
+    config.relative_to(root)
+    config.chmod(0o644)
+    current=config.parent
+    while current != root:
+        current.chmod(0o755)
+        current=current.parent
+    root.chmod(0o755)
+    config.parent.chmod(0o777)
+    command+=['--mount',f'type=bind,src={root},dst={root}']
     try:
         settings=json.loads(config.read_text())
         command+=['--env',f"ZT_ADMIN_PORT={settings.get('admin_port',9100)}",

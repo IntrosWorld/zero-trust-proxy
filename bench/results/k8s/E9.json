@@ -1,0 +1,21 @@
+{
+  "experiment": "E9",
+  "started": 1791540572.0270596,
+  "passed": true,
+  "load": {
+    "requests": 4326,
+    "statuses": {
+      "403": 4326
+    },
+    "expected_status": 403,
+    "failed_requests": 0,
+    "elapsed_seconds": 2.0030445879997387,
+    "requests_per_second": 2159.712282950221,
+    "p50_ms": 1.7907750002450484,
+    "p99_ms": 3.0082540001785674,
+    "workload": "policy decisions for a denied destination; no origin traffic"
+  },
+  "retained_version": 93,
+  "retained_sha256": "1f1ff64bd0f369877c67987da0a7fce26c985f8a817f8c3bfe25f4f08a69d136",
+  "duration_seconds": 38.53552293777466
+}

@@ -1,0 +1,16 @@
+{
+  "local": {
+    "requests_per_second": 9399.75,
+    "p50": "1.40ms",
+    "p99": "23.50ms",
+    "raw": "Running 15s test @ http://zt-proxy.zt-system:3128/\n  2 threads and 64 connections\n  Thread Stats   Avg      Stdev     Max   +/- Stdev\n    Latency     2.56ms    4.11ms  53.60ms   93.37%\n    Req/Sec     4.74k     1.16k    7.34k    64.77%\n  Latency Distribution\n     50%    1.40ms\n     75%    2.62ms\n     90%    4.28ms\n     99%   23.50ms\n  141364 requests in 15.04s, 21.44MB read\n  Non-2xx or 3xx responses: 141364\nRequests/sec:   9399.75\nTransfer/sec:      1.43MB\n",
+    "workload": "authenticated HTTP requests to blocked.invalid; 403 is the expected successful policy decision, not origin throughput"
+  },
+  "redis": {
+    "requests_per_second": 6313.22,
+    "p50": "3.56ms",
+    "p99": "31.66ms",
+    "raw": "Running 15s test @ http://zt-proxy.zt-system:3128/\n  2 threads and 64 connections\n  Thread Stats   Avg      Stdev     Max   +/- Stdev\n    Latency     6.47ms    7.11ms  56.05ms   85.45%\n    Req/Sec     3.18k   663.40     5.23k    62.75%\n  Latency Distribution\n     50%    3.56ms\n     75%    8.36ms\n     90%   16.87ms\n     99%   31.66ms\n  95058 requests in 15.06s, 14.41MB read\n  Non-2xx or 3xx responses: 95058\nRequests/sec:   6313.22\nTransfer/sec:      0.96MB\n",
+    "workload": "authenticated HTTP requests to blocked.invalid; 403 is the expected successful policy decision, not origin throughput"
+  }
+}

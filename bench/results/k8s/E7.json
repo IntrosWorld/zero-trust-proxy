@@ -1,0 +1,20 @@
+{
+  "experiment": "E7",
+  "started": 1791540232.8209128,
+  "passed": true,
+  "fallback": {
+    "requests": 2866,
+    "statuses": {
+      "403": 2866
+    },
+    "expected_status": 403,
+    "failed_requests": 0,
+    "elapsed_seconds": 2.1210304810001617,
+    "requests_per_second": 1351.2299920595915,
+    "p50_ms": 1.6924589999689488,
+    "p99_ms": 4.915934000109701,
+    "workload": "policy decisions for a denied destination; no origin traffic"
+  },
+  "recovery_seconds": 14.219821325999874,
+  "duration_seconds": 20.040599584579468
+}

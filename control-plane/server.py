@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import sqlite3
+import signal
 import subprocess
 import tempfile
 import threading
@@ -229,4 +230,14 @@ if __name__ == '__main__':
     read_token = Path(os.environ['ZT_POLICY_READ_TOKEN_FILE']).read_text().strip()
     if len(admin_token) < 32 or len(read_token) < 32 or admin_token == read_token:
         raise ValueError('distinct admin and read tokens of at least 32 characters required')
-    Server((os.environ.get('ZT_POLICY_BIND', '127.0.0.1'), int(os.environ.get('ZT_POLICY_PORT', '8080'))), store, admin_token, read_token).serve_forever()
+    server = Server((os.environ.get('ZT_POLICY_BIND', '127.0.0.1'), int(os.environ.get('ZT_POLICY_PORT', '8080'))), store, admin_token, read_token)
+    def stop(*_):
+        raise SystemExit(0)
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+    try:
+        server.serve_forever()
+    finally:
+        server.server_close()
+        with store.condition:
+            store.db.close()

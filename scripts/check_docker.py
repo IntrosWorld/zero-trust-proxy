@@ -40,7 +40,7 @@ def main():
         with tempfile.TemporaryDirectory(prefix='zt-docker-tests-') as temp:
             env=os.environ.copy()
             env.update(ZT_BINARY=str(ROOT/'tests/integration/docker_binary.py'),ZT_DOCKER_IMAGE=args.image,
-                       ZT_DOCKER_RUN_ID=run_id,ZT_DOCKER_TEST_ROOT=temp)
+                       ZT_DOCKER_RUN_ID=run_id,ZT_DOCKER_TEST_ROOT=temp,TMPDIR=temp)
             env.pop('ZT_RUNNER',None)
             with (out/'docker-integration.txt').open('w') as log:
                 result=subprocess.run([sys.executable,'-m','pytest','tests/integration','-q',f'--basetemp={temp}/tests'],cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)

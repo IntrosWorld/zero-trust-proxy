@@ -1,37 +1,60 @@
 Images space usage:
 
-REPOSITORY   TAG       IMAGE ID       CREATED              SIZE      SHARED SIZE   UNIQUE SIZE   CONTAINERS
-zt-proxy     local     011b15f3c72c   About a minute ago   126MB     117.5MB       9.012MB       1
-ubuntu       22.04     5ec03bb3441e   13 days ago          119MB     117.5MB       1.983MB       0
+REPOSITORY   TAG               IMAGE ID       CREATED          SIZE      SHARED SIZE   UNIQUE SIZE   CONTAINERS
+zt-policy    kubernetes-next   fa3b5199b44d   2 minutes ago    178MB     134.7MB       43.48MB       0
+zt-proxy     kubernetes-next   4ab9919b708c   4 minutes ago    135MB     134.7MB       8.639kB       0
+zt-client    kubernetes        672b369b7fa2   9 minutes ago    185MB     178.2MB       7.215MB       0
+zt-policy    kubernetes        ae0db5fe4903   10 minutes ago   178MB     178.2MB       10.71kB       0
+zt-proxy     kubernetes        cefc6e157716   11 minutes ago   135MB     134.7MB       8.634kB       0
+zt-proxy     local             011b15f3c72c   21 hours ago     126MB     117.8MB       8.688MB       1
+ubuntu       22.04             5ec03bb3441e   2 weeks ago      119MB     117.5MB       1.983MB       0
+<none>       <none>            099e049362a1   6 weeks ago      1.32GB    0B            1.319GB       3
 
 Containers space usage:
 
-CONTAINER ID   IMAGE            COMMAND                  LOCAL VOLUMES   SIZE      CREATED         STATUS                   NAMES
-d841c2f5a1e6   zt-proxy:local   "/usr/local/bin/zt-p…"   1               4.1kB     5 seconds ago   Up 5 seconds (healthy)   zt-proxy-proxy-1
+CONTAINER ID   IMAGE                  COMMAND                  LOCAL VOLUMES   SIZE      CREATED          STATUS                    NAMES
+9102b011d87f   kindest/node:v1.36.4   "/usr/local/bin/entr…"   1               595MB     22 minutes ago   Up 22 minutes             zt-proxy-worker
+0319c48d2881   kindest/node:v1.36.4   "/usr/local/bin/entr…"   1               598MB     22 minutes ago   Up 22 minutes             zt-proxy-control-plane
+2350aeec4dd6   kindest/node:v1.36.4   "/usr/local/bin/entr…"   1               595MB     22 minutes ago   Up 22 minutes             zt-proxy-worker2
+d841c2f5a1e6   zt-proxy:local         "/usr/local/bin/zt-p…"   1               4.1kB     21 hours ago     Up 32 minutes (healthy)   zt-proxy-proxy-1
 
 Local Volumes space usage:
 
-VOLUME NAME           LINKS     SIZE
-zt-proxy_proxy-logs   1         0B
+VOLUME NAME                                                        LINKS     SIZE
+zt-proxy_proxy-logs                                                1         0B
+6d071cc7d2150cacaa9bdf46d6d5e07a152a4f711a0c16806fe20cc45caf06af   1         1.979GB
+4080e93fba2d39fb19abc4f8bf657609cebde49d7c83477d303863f0d629a6f1   1         3.632GB
+39020b7ee51de302d20b1bea5c625420f142759563b17b655fafc6cfe6abc9d5   1         1.514GB
 
-Build cache usage: 490.7MB
+Build cache usage: 234MB
 
-CACHE ID        CACHE TYPE     SIZE      CREATED              LAST USED            USAGE     SHARED
-i8y3uo55cl9r*   regular        117MB     5 minutes ago                             0         true
-s8djik929uhg*   regular        49.2kB    4 minutes ago        4 minutes ago        1         true
-nsg8urkp0bst    source.local   8.19kB    6 minutes ago        About a minute ago   2         false
-tinyejrvomo9    source.local   8.19kB    5 minutes ago        About a minute ago   2         false
-tal9od7n2uxx    regular        406kB     About a minute ago   About a minute ago   1         true
-viyaek9ioshl    regular        4.13kB    About a minute ago   About a minute ago   1         true
-6eo0ir0ixmkf    source.local   229kB     5 minutes ago        About a minute ago   2         false
-ba6nwtnierew    regular        1.81MB    About a minute ago   About a minute ago   1         false
-u9r9tglerl9j    regular        12.8MB    2 minutes ago        About a minute ago   1         false
-enxi04tib4i9    regular        29kB      About a minute ago   About a minute ago   1         true
-xchtuo0xu4rp    regular        21.2kB    2 minutes ago        About a minute ago   1         true
-mehjjpjml1az    regular        352MB     About a minute ago   About a minute ago   1         false
-kza5msgegvsp    regular        5.14MB    2 minutes ago        About a minute ago   1         true
-mrge3u5xonkg    regular        307kB     2 minutes ago        About a minute ago   1         true
-4qf69p0tesvx    regular        8.19kB    About a minute ago   About a minute ago   1         false
-6ue72ljdwwh5    regular        16.4kB    About a minute ago   About a minute ago   1         false
-knh0kknhn9dr    regular        209kB     About a minute ago   About a minute ago   1         false
-ugx35dqxb90g    regular        20.9kB    About a minute ago   About a minute ago   1         true
+CACHE ID       CACHE TYPE     SIZE      CREATED          LAST USED       USAGE     SHARED
+i8y3uo55cl9r   regular        117MB     21 hours ago                     0         true
+tal9od7n2uxx   regular        406kB     21 hours ago     21 hours ago    1         true
+viyaek9ioshl   regular        4.13kB    21 hours ago     21 hours ago    1         true
+enxi04tib4i9   regular        29kB      21 hours ago     21 hours ago    1         true
+xchtuo0xu4rp   regular        21.2kB    21 hours ago     21 hours ago    1         true
+kza5msgegvsp   regular        5.14MB    21 hours ago     21 hours ago    1         true
+mrge3u5xonkg   regular        307kB     21 hours ago     21 hours ago    1         true
+ugx35dqxb90g   regular        20.9kB    21 hours ago     21 hours ago    1         true
+fd5sl34tql67   regular        612kB     11 minutes ago   9 minutes ago   3         true
+b2k1f52xezfq   regular        20.9kB    11 minutes ago   9 minutes ago   3         true
+am51yu2t7p3w   regular        29kB      11 minutes ago   9 minutes ago   3         true
+ye3obu44x4ay   regular        4.13kB    11 minutes ago   9 minutes ago   3         true
+r8j4tibkd2ij   regular        44.1MB    10 minutes ago   9 minutes ago   2         true
+j8s58p0ba66b   regular        28.4kB    10 minutes ago   9 minutes ago   2         true
+omhvtxwcs7sx   regular        12.6kB    9 minutes ago    9 minutes ago   1         true
+k2rm9tb9u036   regular        4.13kB    10 minutes ago   9 minutes ago   2         true
+kyxjafcscdy3   regular        7.8MB     9 minutes ago    9 minutes ago   1         true
+me2tcsu8vzl3   regular        13.6kB    9 minutes ago    9 minutes ago   1         true
+zqly2a0spv55   regular        13.2MB    11 minutes ago   3 minutes ago   5         true
+x4qgjqq9hvj3   regular        613kB     4 minutes ago    3 minutes ago   2         true
+rveexm32gozx   regular        20.9kB    4 minutes ago    3 minutes ago   2         true
+z6ngjvgi34ml   regular        29kB      4 minutes ago    3 minutes ago   2         true
+wyh0g2m872ap   source.local   20.5kB    3 minutes ago    2 minutes ago   1         false
+4e7uio8j6wol   source.local   8.19kB    3 minutes ago    2 minutes ago   1         false
+rypg0acf2brg   regular        4.13kB    4 minutes ago    2 minutes ago   2         true
+wjh5bfqaznj7   regular        28.4kB    2 minutes ago    2 minutes ago   1         true
+h96bzvwgnd6w   source.local   8.19kB    3 minutes ago    2 minutes ago   1         false
+f8auo8j5ejai   regular        44.1MB    2 minutes ago    2 minutes ago   1         true
+zcmgxais6djv   regular        4.13kB    2 minutes ago    2 minutes ago   1         true

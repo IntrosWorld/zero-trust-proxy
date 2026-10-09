@@ -1,0 +1,27 @@
+{
+  "experiment": "E6",
+  "started": 1791540490.069214,
+  "passed": true,
+  "identity": "shared authenticated bearer identity in Redis; local fallback keyed by source IP per worker",
+  "local": {
+    "statuses": {
+      "403": 53,
+      "429": 37
+    },
+    "elapsed_seconds": 2.289808980000089,
+    "requests": 90,
+    "accepted": 53,
+    "allowed_bound": 9.579617960000178
+  },
+  "redis": {
+    "statuses": {
+      "403": 9,
+      "429": 81
+    },
+    "elapsed_seconds": 2.3357320190000337,
+    "requests": 90,
+    "accepted": 9,
+    "allowed_bound": 9.671464038000067
+  },
+  "duration_seconds": 42.46391582489014
+}

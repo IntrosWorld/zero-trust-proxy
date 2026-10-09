@@ -18,10 +18,10 @@ jobs:
         run: |
           if [ '${{ matrix.preset }}' = tsan ]; then
             setarch x86_64 -R ctest --test-dir build/tsan --output-on-failure
-            ZT_BINARY=build/tsan/zt-proxy setarch x86_64 -R python3 -m pytest tests/integration -q
+            ZT_BINARY=build/tsan/zt-proxy setarch x86_64 -R python3 -m pytest tests/integration control-plane/tests -q
           else
             ctest --test-dir build/${{ matrix.preset }} --output-on-failure
-            ZT_BINARY=build/${{ matrix.preset }}/zt-proxy python3 -m pytest tests/integration -q
+            ZT_BINARY=build/${{ matrix.preset }}/zt-proxy python3 -m pytest tests/integration control-plane/tests -q
           fi
   analysis:
     runs-on: ubuntu-22.04
@@ -49,3 +49,19 @@ jobs:
         with:
           name: docker-results
           path: bench/results/docker*
+  kubernetes:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned cluster tools
+        run: bash scripts/k8s/install-tools.sh
+      - name: Validate chart
+        run: artifacts/bin/helm lint deploy/helm/zt-proxy
+      - name: Build cluster and run experiments
+        run: bash scripts/k8s/check-cluster.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kubernetes-results
+          path: bench/results/k8s/

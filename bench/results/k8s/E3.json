@@ -1,0 +1,39 @@
+{
+  "experiment": "E3",
+  "passed": true,
+  "results": [
+    {
+      "requests_per_second": 3815.0,
+      "p50": "6.66ms",
+      "p99": "45.87ms",
+      "raw": "Running 15s test @ http://zt-proxy.zt-system:3128/\n  2 threads and 64 connections\n  Thread Stats   Avg      Stdev     Max   +/- Stdev\n    Latency    14.91ms   14.06ms  70.17ms   81.94%\n    Req/Sec     1.92k   243.74     3.10k    72.67%\n  Latency Distribution\n     50%    6.66ms\n     75%   25.05ms\n     90%   38.79ms\n     99%   45.87ms\n  57431 requests in 15.05s, 8.71MB read\n  Non-2xx or 3xx responses: 57431\nRequests/sec:   3815.00\nTransfer/sec:    592.37KB\n",
+      "workload": "authenticated HTTP requests to blocked.invalid; 403 is the expected successful policy decision, not origin throughput",
+      "replicas": 1
+    },
+    {
+      "requests_per_second": 2452.25,
+      "p50": "7.32ms",
+      "p99": "54.23ms",
+      "raw": "Running 15s test @ http://zt-proxy.zt-system:3128/\n  2 threads and 64 connections\n  Thread Stats   Avg      Stdev     Max   +/- Stdev\n    Latency    13.58ms   14.07ms  89.36ms   81.35%\n    Req/Sec     1.30k     1.16k    5.35k    80.51%\n  Latency Distribution\n     50%    7.32ms\n     75%   22.60ms\n     90%   34.93ms\n     99%   54.23ms\n  37006 requests in 15.09s, 5.61MB read\n  Non-2xx or 3xx responses: 37006\nRequests/sec:   2452.25\nTransfer/sec:    380.77KB\n",
+      "workload": "authenticated HTTP requests to blocked.invalid; 403 is the expected successful policy decision, not origin throughput",
+      "replicas": 2
+    },
+    {
+      "requests_per_second": 966.07,
+      "p50": "30.52ms",
+      "p99": "76.45ms",
+      "raw": "Running 15s test @ http://zt-proxy.zt-system:3128/\n  2 threads and 64 connections\n  Thread Stats   Avg      Stdev     Max   +/- Stdev\n    Latency    31.46ms   19.33ms 145.26ms   62.59%\n    Req/Sec   488.91     76.66   780.00     72.87%\n  Latency Distribution\n     50%   30.52ms\n     75%   45.71ms\n     90%   57.51ms\n     99%   76.45ms\n  14539 requests in 15.05s, 2.20MB read\n  Non-2xx or 3xx responses: 14539\nRequests/sec:    966.07\nTransfer/sec:    150.01KB\n",
+      "workload": "authenticated HTTP requests to blocked.invalid; 403 is the expected successful policy decision, not origin throughput",
+      "replicas": 3
+    },
+    {
+      "requests_per_second": 5476.23,
+      "p50": "4.14ms",
+      "p99": "41.88ms",
+      "raw": "Running 15s test @ http://zt-proxy.zt-system:3128/\n  2 threads and 64 connections\n  Thread Stats   Avg      Stdev     Max   +/- Stdev\n    Latency     5.82ms    6.89ms  72.48ms   94.58%\n    Req/Sec     2.83k     1.06k    5.05k    74.65%\n  Latency Distribution\n     50%    4.14ms\n     75%    6.56ms\n     90%    9.28ms\n     99%   41.88ms\n  82452 requests in 15.06s, 12.50MB read\n  Non-2xx or 3xx responses: 82452\nRequests/sec:   5476.23\nTransfer/sec:    850.31KB\n",
+      "workload": "authenticated HTTP requests to blocked.invalid; 403 is the expected successful policy decision, not origin throughput",
+      "replicas": 6
+    }
+  ],
+  "note": "one physical host; benchmark client is limited to two CPU cores; scaling is not linear"
+}
