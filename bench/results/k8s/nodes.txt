@@ -1,0 +1,4 @@
+NAME                     STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                       KERNEL-VERSION              CONTAINER-RUNTIME
+zt-proxy-control-plane   Ready    control-plane   10m   v1.36.4   172.18.0.2    <none>        Debian GNU/Linux 13 (trixie)   6.8.0-138-generic (amd64)   containerd://2.3.4
+zt-proxy-worker          Ready    <none>          10m   v1.36.4   172.18.0.3    <none>        Debian GNU/Linux 13 (trixie)   6.8.0-138-generic (amd64)   containerd://2.3.4
+zt-proxy-worker2         Ready    <none>          10m   v1.36.4   172.18.0.4    <none>        Debian GNU/Linux 13 (trixie)   6.8.0-138-generic (amd64)   containerd://2.3.4
