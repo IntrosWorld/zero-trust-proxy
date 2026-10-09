@@ -5,8 +5,9 @@
 #include <chrono>
 #include <unordered_map>
 namespace zt {
-AdminServer::AdminServer(const Config &config, Metrics &metrics)
-    : metrics_(metrics), listener_(listener(config.admin, config.admin_port, false)),
+AdminServer::AdminServer(ConfigStore &configs, Metrics &metrics)
+    : metrics_(metrics), configs_(configs),
+      listener_(listener(configs.load()->admin, configs.load()->admin_port, false)),
       thread_([this] { run(); }) {}
 AdminServer::~AdminServer() {
   stop_.store(true);
@@ -58,9 +59,25 @@ void AdminServer::run() {
             std::string type = "text/plain; version=0.0.4";
             if (p.input.starts_with("GET /healthz HTTP/1.1\r\n"))
               body = "ok\n";
-            else if (p.input.starts_with("GET /metrics HTTP/1.1\r\n"))
-              body = metrics_.render();
-            else {
+            else if (p.input.starts_with("GET /readyz HTTP/1.1\r\n")) {
+              status = metrics_.ready.load() ? 200 : 503;
+              body = status == 200 ? "ready\n" : "not ready\n";
+            } else if (p.input.starts_with("GET /metrics HTTP/1.1\r\n")) {
+              auto cfg = configs_.load();
+              auto now = std::chrono::duration_cast<std::chrono::seconds>(
+                             std::chrono::system_clock::now().time_since_epoch())
+                             .count();
+              body = metrics_.render() + "# TYPE zt_policy_version gauge\nzt_policy_version " +
+                     std::to_string(cfg->policy_version) +
+                     "\n# TYPE zt_policy_age_seconds gauge\nzt_policy_age_seconds " +
+                     std::to_string(std::max<int64_t>(0, now - cfg->policy_loaded_at)) + "\n";
+            } else if (p.input.starts_with("GET /policy HTTP/1.1\r\n")) {
+              auto cfg = configs_.load();
+              type = "application/json";
+              body = "{\"version\":" + std::to_string(cfg->policy_version) + ",\"sha256\":\"" +
+                     cfg->policy_sha256 +
+                     "\",\"loaded_at\":" + std::to_string(cfg->policy_loaded_at) + "}";
+            } else {
               status = 404;
               body = "not found\n";
             }

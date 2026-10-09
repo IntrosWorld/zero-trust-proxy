@@ -6,7 +6,7 @@
 #include "proxy/relay.h"
 #include <memory>
 namespace zt {
-enum class State { headers, resolving, connecting, hello, relay, error };
+enum class State { headers, limiting, resolving, connecting, hello, relay, error };
 struct Connection {
   uint64_t id;
   Fd client, upstream;

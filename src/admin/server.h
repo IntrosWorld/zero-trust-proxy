@@ -7,13 +7,14 @@
 namespace zt {
 class AdminServer {
   Metrics &metrics_;
+  ConfigStore &configs_;
   Fd listener_;
   std::atomic<bool> stop_{false};
   std::thread thread_;
   void run();
 
 public:
-  AdminServer(const Config &config, Metrics &metrics);
+  AdminServer(ConfigStore &configs, Metrics &metrics);
   ~AdminServer();
 };
 } // namespace zt

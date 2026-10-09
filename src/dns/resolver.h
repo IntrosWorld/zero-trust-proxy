@@ -13,10 +13,16 @@ struct DnsResult {
   std::vector<Address> addresses;
   double seconds = 0;
 };
+struct RateResult {
+  uint64_t id;
+  bool available;
+  bool allowed;
+};
 struct Mailbox {
   Fd wakeup;
   std::mutex mutex;
   std::deque<DnsResult> results;
+  std::deque<RateResult> rate_results;
   Mailbox();
 };
 class Resolver {

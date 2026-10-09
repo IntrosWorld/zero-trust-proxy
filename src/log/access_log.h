@@ -10,7 +10,8 @@ namespace zt {
 std::string json_string(const std::string &s);
 class AccessLog {
   Metrics &metrics_;
-  std::ofstream output_;
+  std::ofstream file_;
+  std::ostream *output_;
   std::mutex mutex_;
   std::condition_variable cv_;
   std::deque<std::string> queue_;

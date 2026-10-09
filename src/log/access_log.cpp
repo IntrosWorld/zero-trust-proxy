@@ -1,4 +1,5 @@
 #include "log/access_log.h"
+#include <iostream>
 #include <stdexcept>
 namespace zt {
 std::string json_string(const std::string &s) {
@@ -18,8 +19,12 @@ std::string json_string(const std::string &s) {
   return out + '"';
 }
 AccessLog::AccessLog(const std::string &path, Metrics &metrics)
-    : metrics_(metrics), output_(path, std::ios::app) {
-  if (!output_)
+    : metrics_(metrics), output_(&std::cout) {
+  if (path != "stdout") {
+    file_.open(path, std::ios::app);
+    output_ = &file_;
+  }
+  if (!*output_)
     throw std::runtime_error("cannot open access log: " + path);
   thread_ = std::thread([this] { run(); });
 }
@@ -53,11 +58,11 @@ void AccessLog::run() {
         break;
     }
     for (const auto &line : batch) {
-      output_ << line << '\n';
-      if (!output_)
+      *output_ << line << '\n';
+      if (!*output_)
         metrics_.log_drops.fetch_add(1, std::memory_order_relaxed);
     }
-    output_.flush();
+    output_->flush();
   }
 }
 } // namespace zt

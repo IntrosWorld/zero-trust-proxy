@@ -1,4 +1,6 @@
 #include "config/config.h"
+#include "config/json.h"
+#include "control/sha256.h"
 #include "http/request_parser.h"
 #include "net/addr.h"
 #include "policy/host.h"
@@ -11,199 +13,6 @@
 #include <thread>
 #include <variant>
 namespace zt {
-namespace {
-struct Json {
-  using Array = std::vector<Json>;
-  using Object = std::map<std::string, Json>;
-  std::variant<std::nullptr_t, bool, double, std::string, Array, Object> value;
-  template <class T> const T &as() const {
-    auto p = std::get_if<T>(&value);
-    if (!p)
-      throw std::runtime_error("incorrect JSON value type");
-    return *p;
-  }
-};
-class Reader {
-  std::string s;
-  size_t p = 0;
-  void ws() {
-    while (p < s.size() && (s[p] == ' ' || s[p] == '\t' || s[p] == '\n' || s[p] == '\r'))
-      ++p;
-  }
-  char get() {
-    if (p >= s.size())
-      throw std::runtime_error("truncated JSON");
-    return s[p++];
-  }
-  unsigned hex4() {
-    unsigned value = 0;
-    for (int i = 0; i < 4; ++i) {
-      char c = get();
-      unsigned digit;
-      if (c >= '0' && c <= '9')
-        digit = c - '0';
-      else if (c >= 'a' && c <= 'f')
-        digit = c - 'a' + 10;
-      else if (c >= 'A' && c <= 'F')
-        digit = c - 'A' + 10;
-      else
-        throw std::runtime_error("invalid JSON unicode escape");
-      value = (value << 4) | digit;
-    }
-    return value;
-  }
-  void unicode(std::string &out) {
-    unsigned cp = hex4();
-    if (cp >= 0xd800 && cp <= 0xdbff) {
-      if (get() != '\\' || get() != 'u')
-        throw std::runtime_error("missing low surrogate");
-      unsigned lo = hex4();
-      if (lo < 0xdc00 || lo > 0xdfff)
-        throw std::runtime_error("invalid low surrogate");
-      cp = 0x10000 + ((cp - 0xd800) << 10) + lo - 0xdc00;
-    } else if (cp >= 0xdc00 && cp <= 0xdfff)
-      throw std::runtime_error("unpaired low surrogate");
-    if (cp < 0x80)
-      out += static_cast<char>(cp);
-    else if (cp < 0x800) {
-      out += static_cast<char>(0xc0 | (cp >> 6));
-      out += static_cast<char>(0x80 | (cp & 63));
-    } else if (cp < 0x10000) {
-      out += static_cast<char>(0xe0 | (cp >> 12));
-      out += static_cast<char>(0x80 | ((cp >> 6) & 63));
-      out += static_cast<char>(0x80 | (cp & 63));
-    } else {
-      out += static_cast<char>(0xf0 | (cp >> 18));
-      out += static_cast<char>(0x80 | ((cp >> 12) & 63));
-      out += static_cast<char>(0x80 | ((cp >> 6) & 63));
-      out += static_cast<char>(0x80 | (cp & 63));
-    }
-  }
-  std::string string() {
-    if (get() != '"')
-      throw std::runtime_error("expected JSON string");
-    std::string out;
-    for (;;) {
-      unsigned char c = get();
-      if (c == '"')
-        return out;
-      if (c < 32)
-        throw std::runtime_error("control character in JSON");
-      if (c == '\\') {
-        c = get();
-        if (c == 'n')
-          out += '\n';
-        else if (c == 'r')
-          out += '\r';
-        else if (c == 't')
-          out += '\t';
-        else if (c == 'b')
-          out += '\b';
-        else if (c == 'f')
-          out += '\f';
-        else if (c == 'u')
-          unicode(out);
-        else if (c == '"' || c == '\\' || c == '/')
-          out += c;
-        else
-          throw std::runtime_error("invalid JSON escape");
-      } else
-        out += c;
-    }
-  }
-  Json value(int depth = 0) {
-    if (depth > 16)
-      throw std::runtime_error("JSON nesting limit");
-    ws();
-    if (p >= s.size())
-      throw std::runtime_error("missing JSON value");
-    char c = s[p];
-    if (c == '"')
-      return Json{string()};
-    if (c == '{' || c == '[') {
-      ++p;
-      ws();
-      Json::Object obj;
-      Json::Array arr;
-      char end = c == '{' ? '}' : ']';
-      if (p < s.size() && s[p] == end) {
-        ++p;
-        return c == '{' ? Json{obj} : Json{arr};
-      }
-      for (;;) {
-        ws();
-        if (c == '{') {
-          auto key = string();
-          ws();
-          if (get() != ':')
-            throw std::runtime_error("expected colon");
-          if (!obj.emplace(key, value(depth + 1)).second)
-            throw std::runtime_error("duplicate JSON key");
-        } else
-          arr.push_back(value(depth + 1));
-        ws();
-        char sep = get();
-        if (sep == end)
-          break;
-        if (sep != ',')
-          throw std::runtime_error("expected comma");
-      }
-      return c == '{' ? Json{obj} : Json{arr};
-    }
-    for (auto [literal, v] : {std::pair{"true", true}, std::pair{"false", false}})
-      if (s.compare(p, std::char_traits<char>::length(literal), literal) == 0) {
-        p += std::char_traits<char>::length(literal);
-        return Json{v};
-      }
-    if (s.compare(p, 4, "null") == 0) {
-      p += 4;
-      return Json{nullptr};
-    }
-    size_t start = p;
-    if (s[p] == '-')
-      ++p;
-    if (p >= s.size() || s[p] < '0' || s[p] > '9')
-      throw std::runtime_error("invalid JSON number");
-    if (s[p] == '0')
-      ++p;
-    else
-      while (p < s.size() && s[p] >= '0' && s[p] <= '9')
-        ++p;
-    if (p < s.size() && s[p] == '.') {
-      ++p;
-      size_t begin = p;
-      while (p < s.size() && s[p] >= '0' && s[p] <= '9')
-        ++p;
-      if (p == begin)
-        throw std::runtime_error("invalid fraction");
-    }
-    if (p < s.size() && (s[p] == 'e' || s[p] == 'E')) {
-      ++p;
-      if (p < s.size() && (s[p] == '+' || s[p] == '-'))
-        ++p;
-      size_t begin = p;
-      while (p < s.size() && s[p] >= '0' && s[p] <= '9')
-        ++p;
-      if (p == begin)
-        throw std::runtime_error("invalid exponent");
-    }
-    double n = std::stod(s.substr(start, p - start));
-    if (!std::isfinite(n))
-      throw std::runtime_error("nonfinite JSON number");
-    return Json{n};
-  }
-
-public:
-  explicit Reader(std::string text) : s(std::move(text)) {}
-  Json read() {
-    auto out = value();
-    ws();
-    if (p != s.size())
-      throw std::runtime_error("trailing JSON data");
-    return out;
-  }
-};
-} // namespace
 std::shared_ptr<const Config> load_config(const std::string &path, bool allow_test) {
   std::ifstream f(path);
   if (!f)
@@ -212,10 +21,16 @@ std::shared_ptr<const Config> load_config(const std::string &path, bool allow_te
   buffer << f.rdbuf();
   if (buffer.str().size() > 1024 * 1024)
     throw std::runtime_error("config too large");
-  auto root = Reader(buffer.str()).read();
-  auto obj = root.as<Json::Object>();
-  auto c = std::make_shared<Config>();
-  c->workers = std::max(1U, std::thread::hardware_concurrency());
+  return parse_config(buffer.str(), allow_test);
+}
+std::shared_ptr<const Config> parse_config(const std::string &text, bool allow_test,
+                                           const Config *base) {
+  if (text.size() > 1024 * 1024)
+    throw std::runtime_error("config too large");
+  auto obj = Reader(text).read().as<Json::Object>();
+  auto c = base ? std::make_shared<Config>(*base) : std::make_shared<Config>();
+  if (!base)
+    c->workers = std::max(1U, std::thread::hardware_concurrency());
   auto take = [&](const char *key) -> const Json * {
     auto it = obj.find(key);
     return it == obj.end() ? nullptr : &it->second;
@@ -258,6 +73,25 @@ std::shared_ptr<const Config> load_config(const std::string &path, bool allow_te
         out.push_back(v.as<std::string>());
     }
   };
+  auto optional_string = [&](const char *k, std::string &out) {
+    known.insert(k);
+    if (auto j = take(k))
+      out = j->as<std::string>();
+    if (out.find('\0') != out.npos || out.size() > 4096)
+      throw std::runtime_error("invalid configuration string");
+  };
+  optional_string("tokens_file", c->tokens_file);
+  optional_string("policy_url", c->policy_url);
+  optional_string("policy_token_file", c->policy_token_file);
+  optional_string("redis_host", c->redis_host);
+  optional_string("redis_password_file", c->redis_password_file);
+  integer("policy_version", c->policy_version, 0, 2147483647);
+  integer("policy_poll_ms", c->policy_poll_ms, 50, 60000);
+  integer("policy_wait_seconds", c->policy_wait_seconds, 0, 30);
+  integer("redis_port", c->redis_port, 1, 65535);
+  integer("redis_threads", c->redis_threads, 1, 16);
+  integer("redis_timeout_ms", c->redis_timeout_ms, 10, 5000);
+  boolean("redis_fail_closed", c->redis_fail_closed);
   str("listen", c->listen);
   str("admin", c->admin);
   str("log_path", c->log_path);
@@ -273,6 +107,8 @@ std::shared_ptr<const Config> load_config(const std::string &path, bool allow_te
   integer("idle_timeout_ms", c->idle_timeout_ms, 50, 86400000);
   integer("tunnel_lifetime_ms", c->tunnel_lifetime_ms, 100, 86400000);
   integer("drain_timeout_ms", c->drain_timeout_ms, 50, 3600000);
+  integer("shutdown_delay_ms", c->shutdown_delay_ms, 0, 60000);
+  boolean("admin_allow_remote", c->admin_allow_remote);
   real("rate", c->rate);
   real("burst", c->burst);
   boolean("require_auth", c->require_auth);
@@ -315,9 +151,14 @@ std::shared_ptr<const Config> load_config(const std::string &path, bool allow_te
         throw std::runtime_error("invalid host pattern: " + host);
     }
   }
+  if (!base && !c->tokens_file.empty())
+    c->tokens = {read_secret(c->tokens_file)};
+  if (!c->policy_url.empty() &&
+      (c->policy_token_file.empty() || !c->policy_url.starts_with("http://")))
+    throw std::runtime_error("policy_url requires http:// and policy_token_file");
   auto bind = Address::parse(c->listen, c->port);
   auto admin = Address::parse(c->admin, c->admin_port);
-  if (!admin.loopback())
+  if (!admin.loopback() && !(c->admin_allow_remote && c->require_auth))
     throw std::runtime_error("admin must bind a loopback address");
   if (!bind.loopback() && !c->require_auth)
     throw std::runtime_error("non-loopback listener requires authentication");
@@ -333,12 +174,61 @@ std::shared_ptr<const Config> load_config(const std::string &path, bool allow_te
     throw std::runtime_error("test hooks require test_mode");
   if (c->burst < 1)
     throw std::runtime_error("burst must be at least one");
+  c->policy_sha256 = sha256(policy_json(*c));
+  c->policy_loaded_at = std::chrono::duration_cast<std::chrono::seconds>(
+                            std::chrono::system_clock::now().time_since_epoch())
+                            .count();
   return c;
 }
 bool same_runtime(const Config &a, const Config &b) {
   return a.listen == b.listen && a.port == b.port && a.admin == b.admin &&
          a.admin_port == b.admin_port && a.workers == b.workers &&
          a.resolver_threads == b.resolver_threads && a.log_path == b.log_path &&
-         a.test_mode == b.test_mode;
+         a.test_mode == b.test_mode && a.admin_allow_remote == b.admin_allow_remote &&
+         a.policy_url == b.policy_url && a.policy_token_file == b.policy_token_file &&
+         a.redis_host == b.redis_host && a.redis_port == b.redis_port &&
+         a.redis_password_file == b.redis_password_file && a.redis_threads == b.redis_threads &&
+         a.redis_timeout_ms == b.redis_timeout_ms && a.tokens_file == b.tokens_file;
+}
+std::string read_secret(const std::string &path) {
+  std::ifstream file(path);
+  std::string token;
+  if (!file || !std::getline(file, token) || token.empty() || token.size() > 1024 ||
+      std::any_of(token.begin(), token.end(), [](unsigned char c) { return c < 33 || c > 126; }))
+    throw std::runtime_error("cannot read valid secret");
+  return token;
+}
+std::string policy_json(const Config &c) {
+  Json::Object obj;
+  auto strings = [&](const char *key, const auto &items) {
+    Json::Array values;
+    for (const auto &v : items)
+      values.push_back(Json{v});
+    obj[key] = Json{values};
+  };
+  strings("allowlist", c.allowlist);
+  strings("denylist", c.denylist);
+  strings("http_allowlist", c.http_allowlist);
+  Json::Array ports;
+  for (int port : c.allowed_ports)
+    ports.push_back(Json{double(port)});
+  obj["allowed_ports"] = Json{ports};
+  obj["rate"] = Json{c.rate};
+  obj["burst"] = Json{c.burst};
+  obj["policy_version"] = Json{double(c.policy_version)};
+  return json_dump(Json{obj});
+}
+std::shared_ptr<const Config> parse_policy(const std::string &text, const Config &base) {
+  const auto obj = Reader(text).read().as<Json::Object>();
+  const std::set<std::string> fields{"allowlist", "denylist", "http_allowlist", "allowed_ports",
+                                     "rate",      "burst",    "policy_version"};
+  for (const auto &[key, value] : obj) {
+    (void)value;
+    if (!fields.contains(key))
+      throw std::runtime_error("remote runtime field: " + key);
+  }
+  if (!obj.contains("policy_version"))
+    throw std::runtime_error("policy_version required");
+  return parse_config(text, base.test_mode, &base);
 }
 } // namespace zt

@@ -333,3 +333,23 @@ def test_config_json_validation(tmp_path):
     path.write_text('{"rate":1e2,"log_path":"\\u03b1\\ud83d\\ude80.jsonl","allowlist":["EXAMPLE.COM"]}')
     result=subprocess.run([str(BINARY),'--config',str(path),'--check-config'],capture_output=True)
     assert result.returncode==0,result.stderr
+
+
+def test_readiness_during_graceful_shutdown(tmp_path):
+    """SIGTERM withdraws readiness before closing the data-plane listener."""
+    import urllib.error
+    import urllib.request
+    with backend(tmp_path) as port:
+        with Proxy(tmp_path, port, shutdown_delay_ms=800) as p:
+            def ready():
+                try:
+                    return urllib.request.urlopen(f'http://127.0.0.1:{p.admin}/readyz', timeout=2).status
+                except urllib.error.HTTPError as e:
+                    return e.code
+            assert ready() == 200
+            p.process.terminate()
+            end = time.monotonic() + 0.5
+            while ready() == 200 and time.monotonic() < end:
+                time.sleep(0.01)
+            assert ready() == 503
+            assert p.request(request(port=port)).startswith(b'HTTP/1.1 200')

@@ -11,7 +11,7 @@ jobs:
         preset: [release, asan, tsan]
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y cmake g++ libgtest-dev python3-pytest openssl
+      - run: sudo apt-get update && sudo apt-get install -y libssl-dev cmake g++ libgtest-dev python3-pytest openssl
       - run: cmake --preset ${{ matrix.preset }} && cmake --build --preset ${{ matrix.preset }}
       - name: Unit and integration tests
         shell: bash
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y clang clang-tidy clang-format cmake libgtest-dev
+      - run: sudo apt-get update && sudo apt-get install -y libssl-dev clang clang-tidy clang-format cmake libgtest-dev
       - run: cmake --preset debug && cmake --build --preset debug
       - run: python3 scripts/tidy.py
       - run: find src tests/unit tests/fuzz -type f \( -name '*.cpp' -o -name '*.h' \) -print0 | xargs -0 clang-format --dry-run --Werror

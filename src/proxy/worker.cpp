@@ -1,4 +1,5 @@
 #include "proxy/worker.h"
+#include "control/sha256.h"
 #include "tls/sni.h"
 #include <algorithm>
 #include <array>
@@ -23,10 +24,11 @@ void drain_counter(int fd) {
   }
 }
 } // namespace
-Worker::Worker(ConfigStore &configs, Resolver &resolver, Metrics &metrics, AccessLog &log)
+Worker::Worker(ConfigStore &configs, Resolver &resolver, Metrics &metrics, AccessLog &log,
+               RedisLimiter *redis)
     : configs_(configs), resolver_(resolver), metrics_(metrics), log_(log),
       listener_(listener(configs.load()->listen, configs.load()->port)), timer_(make_timer()),
-      mailbox_(std::make_shared<Mailbox>()) {
+      mailbox_(std::make_shared<Mailbox>()), redis_(redis) {
   loop_.add(listener_.get(), LISTENER, EPOLLIN);
   loop_.add(timer_.get(), TIMER, EPOLLIN);
   loop_.add(mailbox_->wakeup.get(), WAKEUP, EPOLLIN);
@@ -114,10 +116,35 @@ void Worker::request_ready(Connection &c) {
     fail(c, 407, "auth", "proxy authentication required");
     return;
   }
-  if (!limiter_.allow(c.client_ip, c.config->rate, c.config->burst)) {
+  if (redis_) {
+    c.state = State::limiting;
+    c.phase = Clock::now();
+    auto identity = sha256(c.config->require_auth ? c.request.authorization : c.client_ip);
+    if (!redis_->submit(c.id, std::move(identity), c.config, mailbox_))
+      rate_result(c, false, false);
+    return;
+  }
+  rate_result(c, false, false);
+}
+void Worker::rate_result(Connection &c, bool available, bool allowed) {
+  if (!available) {
+    if (redis_) {
+      ++metrics_.redis_fallback;
+      metrics_.redis_backend.store(false);
+    }
+    if (redis_ && c.config->redis_fail_closed) {
+      fail(c, 503, "rate-backend", "Redis unavailable");
+      return;
+    }
+    allowed = limiter_.allow(c.client_ip, c.config->rate, c.config->burst);
+  }
+  if (!allowed) {
     fail(c, 429, "rate-limit", "request rate exceeded");
     return;
   }
+  policy_ready(c);
+}
+void Worker::policy_ready(Connection &c) {
   auto d = precheck(*c.config, c.request);
   if (!d.allow) {
     fail(c, d.status, d.rule, d.reason);
@@ -214,7 +241,8 @@ void Worker::read_client(Connection &c) {
   size_t budget = 262144;
   while (budget && !c.dead && !c.client_eof) {
     size_t amount = std::min(buffer.size(), budget);
-    if (c.state == State::error || c.state == State::resolving || c.state == State::connecting)
+    if (c.state == State::error || c.state == State::limiting || c.state == State::resolving ||
+        c.state == State::connecting)
       return;
     if (c.state == State::relay) {
       if (!c.up.empty())
@@ -380,9 +408,20 @@ void Worker::arm(Connection &c) {
 void Worker::dns_results() {
   drain_counter(mailbox_->wakeup.get());
   std::deque<DnsResult> results;
+  std::deque<RateResult> rates;
   {
     std::lock_guard lock(mailbox_->mutex);
     results.swap(mailbox_->results);
+    rates.swap(mailbox_->rate_results);
+  }
+  for (auto &r : rates) {
+    auto it = connections_.find(r.id);
+    if (it == connections_.end() || it->second->state != State::limiting)
+      continue;
+    auto &c = *it->second;
+    rate_result(c, r.available, r.allowed);
+    pump(c);
+    arm(c);
   }
   for (auto &r : results) {
     auto it = connections_.find(r.id);
@@ -417,7 +456,11 @@ void Worker::tick() {
     else if ((c.state == State::headers || c.state == State::hello) &&
              phase > c.config->header_timeout_ms)
       fail(c, 408, "header-timeout", "header or ClientHello deadline exceeded");
-    else if (c.state == State::resolving && phase > c.config->dns_timeout_ms)
+    else if (c.state == State::limiting && phase > c.config->redis_timeout_ms * 4) {
+      rate_result(c, false, false);
+      pump(c);
+      arm(c);
+    } else if (c.state == State::resolving && phase > c.config->dns_timeout_ms)
       fail(c, 504, "dns-timeout", "resolution deadline exceeded");
     else if (c.state == State::connecting && phase > c.config->connect_timeout_ms)
       fail(c, 504, "connect-timeout", "connect deadline exceeded");
