@@ -1,0 +1,24 @@
+{
+  "policy": {
+    "policy": {
+      "allowed_ports": [
+        80,
+        443
+      ],
+      "allowlist": [
+        "example.com",
+        "*.example.com"
+      ],
+      "burst": 200,
+      "denylist": [],
+      "http_allowlist": [],
+      "policy_version": 97,
+      "rate": 100
+    },
+    "version": 97,
+    "sha256": "3da6421c4102a85abcd2e9af99f2eda2a640316a8dd3c53ef9fe26312caa39dc"
+  },
+  "ready_pods": 3,
+  "host_proxy_https_verified": true,
+  "body_bytes": 577
+}

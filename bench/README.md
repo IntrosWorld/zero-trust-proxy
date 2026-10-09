@@ -26,3 +26,7 @@ The idle test opens 1,000 unfinished header connections and reports RSS before/a
 The first `perf record` attempt was denied by this host's `perf_event_paranoid=4`; `perf-attempt.txt` preserves the failure. Callgrind profiles and annotated hotspots are provided instead of a fabricated perf flame graph. Optional splice and seccomp experiments are not implemented.
 
 The red-team runner reports **scenario categories**, not independent exploit probabilities. R6/R7 and several policy subcases share fixtures, but each assertion checks its own result. R5 models rebinding by changing a fake DNS mapping after a connection is pinned; its initial endpoint is explicitly permitted loopback test infrastructure, not a public IP routed locally. L3 integration smoke is 1 MiB; the separate TLS benchmark supplies the full 500 MiB check. No categories are silently skipped.
+
+## Kubernetes measurements
+
+`k8s/run.py` covers E1/E2/E5–E10; `k8s/scaling.py` covers E3/E4 and Redis latency. Run them sequentially against the dedicated cluster. Raw JSON, sanitizer/static-analysis results, pod security settings and live dashboard/plots are under `results/k8s/`. `k8s/plot.py` recreates the plots from E3/E4 JSON using matplotlib. See the [Kubernetes guide](../docs/kubernetes.md) for exact commands, policy restoration, measured results and limitations. High-rate requests intentionally receive authenticated HTTP 403 policy decisions; only E8's functional check contacts the external origin. Do not compare those decision rates directly with the original forwarding benchmark above.

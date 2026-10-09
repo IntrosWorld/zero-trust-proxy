@@ -1,0 +1,14 @@
+NAME                             READY   STATUS        RESTARTS   AGE   IP               NODE               NOMINATED NODE   READINESS GATES
+pod/redis-fbbc7994-5gd8w         1/1     Running       0          21m   10.244.18.201    zt-proxy-worker    <none>           <none>
+pod/zt-admin-6457f66d66-xgx7t    1/1     Terminating   0          25m   10.244.229.135   zt-proxy-worker2   <none>           <none>
+pod/zt-admin-7c5667c8b5-grg6p    1/1     Running       0          29s   10.244.18.233    zt-proxy-worker    <none>           <none>
+pod/zt-policy-5bcb8c86fb-l28f7   1/1     Running       0          50s   10.244.229.176   zt-proxy-worker2   <none>           <none>
+pod/zt-proxy-545c8fc48b-6cvph    1/1     Running       0          44s   10.244.18.231    zt-proxy-worker    <none>           <none>
+pod/zt-proxy-545c8fc48b-gzwxv    1/1     Running       0          51s   10.244.229.175   zt-proxy-worker2   <none>           <none>
+pod/zt-proxy-545c8fc48b-qnzbx    1/1     Running       0          47s   10.244.229.177   zt-proxy-worker2   <none>           <none>
+
+NAME                                           REFERENCE             TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/zt-proxy   Deployment/zt-proxy   cpu: 2%/60%   3         6         3          12m
+
+NAME                                  MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
+poddisruptionbudget.policy/zt-proxy   2               N/A               1                     26m

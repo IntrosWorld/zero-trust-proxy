@@ -1,0 +1,13 @@
+Filesystem       1B-blocks        Used  Available Use% Mounted on
+/dev/sda2      97821933568 90448584704 2357022720  98% /
+12118097920	/var/lib/docker
+3528761344	/var/lib/containerd
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          8         2         1.559GB   52.7MB (3%)
+Containers      4         4         1.787GB   0B (0%)
+Local Volumes   4         4         7.281GB   0B (0%)
+Build Cache     26        0         234MB     0B
+zt-proxy-worker Up 39 minutes
+zt-proxy-control-plane Up 39 minutes
+zt-proxy-worker2 Up 39 minutes
+zt-proxy-proxy-1 Up 50 minutes (healthy)

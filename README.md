@@ -2,14 +2,14 @@
 
 [![CI configured; hosted run pending](docs/ci.svg)](.github/workflows/ci.yml)
 
-A working Linux C++20 forward proxy with HTTP forwarding, HTTPS CONNECT tunnels, destination allowlisting, DNS-pinned SSRF protection and TLS SNI checks without decryption. Networking uses POSIX sockets and epoll directly; the executable has no third-party networking, HTTP, TLS or JSON library dependency.
+A working Linux C++20 forward proxy with HTTP forwarding, HTTPS CONNECT tunnels, destination allowlisting, DNS-pinned SSRF protection and TLS SNI checks without decryption. Networking uses POSIX sockets and epoll directly; the executable has no third-party networking, HTTP or JSON library dependency. This Kubernetes branch uses OpenSSL libcrypto solely for SHA-256 policy/identity hashing; it does not terminate TLS.
 
-The project lives on the Linux ext4 filesystem at `/home/mohit/projects/zt-proxy`. The original specification is preserved in [docs/spec.md](docs/spec.md). See [checkpoints](docs/checkpoints.md) for implementation history, [architecture](docs/architecture.md) for security and concurrency details, and [interview notes](docs/interview.md) for explanations.
+The project lives on the Linux ext4 filesystem at `/home/mohit/projects/zt-proxy`. The original specification is preserved in [docs/spec.md](docs/spec.md). The `kubernetes` branch adds a [local three-node Kubernetes deployment](docs/kubernetes.md), policy control plane and Redis rate limiting. See [checkpoints](docs/checkpoints.md) for implementation history, [architecture](docs/architecture.md) for security and concurrency details, and [interview notes](docs/interview.md) for explanations.
 
 ## Build and run
 
 ```bash
-sudo apt-get install -y build-essential cmake libgtest-dev python3-pytest openssl curl
+sudo apt-get install -y build-essential cmake libgtest-dev libssl-dev python3-pytest openssl curl
 cmake --preset release
 cmake --build --preset release
 ./build/release/zt-proxy --config config/zt-proxy.json --check-config
@@ -41,7 +41,7 @@ Send `SIGHUP` to reload policy, tokens, limits and timeouts atomically. Send `SI
 - Loopback health/Prometheus endpoints and asynchronous bounded JSONL access logs.
 - An adapter exercised with the existing SentinelAgent EgressClient and DLP implementation.
 
-Plain HTTP handles **one request per connection** and sends `Connection: close`. TLS tunnels remain bidirectional until EOF/deadline. No-SNI/ECH falls back to CONNECT host/IP policy. Rate and per-client connection limits are **per worker**. Read the [documented boundaries](docs/architecture.md#known-boundaries), including the libc DNS shutdown caveat, before deployment.
+Plain HTTP handles **one request per connection** and sends `Connection: close`. TLS tunnels remain bidirectional until EOF/deadline. No-SNI/ECH falls back to CONNECT host/IP policy. Local rate and per-client connection limits are **per worker**; optional Redis mode shares request-rate buckets across replicas. Read the [documented boundaries](docs/architecture.md#known-boundaries), including the libc DNS shutdown caveat, before deployment.
 
 ## Configuration and authentication
 
@@ -50,7 +50,7 @@ Plain HTTP handles **one request per connection** and sends `Connection: close`.
 | Setting | Purpose |
 | --- | --- |
 | `listen`, `port` | Numeric bind address and unprivileged port; default loopback:3128 |
-| `admin`, `admin_port` | Loopback-only admin endpoint; default :9100 |
+| `admin`, `admin_port` | Default loopback :9100; explicit `admin_allow_remote` plus proxy authentication permits cluster probes/scraping |
 | `workers`, `resolver_threads` | Worker and DNS thread counts; omitted workers use hardware concurrency |
 | `allowlist`, `denylist`, `http_allowlist` | Exact or `*.suffix` rules; deny overrides allow |
 | `allowed_ports` | Destination ports; example allows 80/443 with host policy still required |
@@ -61,7 +61,7 @@ Plain HTTP handles **one request per connection** and sends `Connection: close`.
 | `dns_timeout_ms`, `connect_timeout_ms` | Resolution wait and individual address-connect deadlines |
 | `idle_timeout_ms`, `tunnel_lifetime_ms` | Idle and total connection lifetime deadlines |
 | `drain_timeout_ms` | Grace period after shutdown begins |
-| `log_path` | JSONL append destination; relative to the process working directory |
+| `log_path` | JSONL append destination; relative to the process working directory, or `stdout` for container JSONL logs |
 
 To require authentication, set `require_auth` to `true` and `tokens` to an operator-generated random secret. Protect that config file. For curl:
 
@@ -86,9 +86,9 @@ bash scripts/valgrind.sh
 bash scripts/fuzz.sh 30
 ```
 
-Verified locally: **18 GoogleTest cases and 41 pytest integration cases**, with the complete suite passing in release, ASan/UBSan and TSan builds. All **16 attack categories** were blocked and all **five legitimate categories** passed in the local red-team model. This is a scenario coverage result, not a universal security guarantee. Tests cover actual curl HTTP/HTTPS, 2,000 half-open sockets, another client's continued service, DNS mapping changes after pinning, chunked uploads, IPv6, matching/mismatched/no SNI, real system DNS, reload and graceful shutdown.
+Original standalone baseline: **18 GoogleTest cases and 41 pytest integration cases**, with the complete suite passing in release, ASan/UBSan and TSan builds. All **16 attack categories** were blocked and all **five legitimate categories** passed in the local red-team model. This is a scenario coverage result, not a universal security guarantee. Tests cover actual curl HTTP/HTTPS, 2,000 half-open sockets, another client's continued service, DNS mapping changes after pinning, chunked uploads, IPv6, matching/mismatched/no SNI, real system DNS, reload and graceful shutdown.
 
-The final libFuzzer runs completed **341,762 HTTP inputs and 1,488,004 SNI inputs**, without crashes. An actual OpenSSL ClientHello is checked in as a seed and tested at every truncation. Four final Valgrind integration scenarios report **zero bytes in use at exit and zero errors**. clang-tidy passes across all 15 translation units. Raw outputs are in [bench/results](bench/results).
+The standalone baseline libFuzzer runs completed **341,762 HTTP inputs and 1,488,004 SNI inputs**, without crashes. An actual OpenSSL ClientHello is checked in as a seed and tested at every truncation. Four final Valgrind integration scenarios report **zero bytes in use at exit and zero errors**. The baseline clang-tidy check passed across 15 translation units. Raw outputs are in [bench/results](bench/results).
 
 This host's TSan runtime collides with randomized mappings; `scripts/check.sh tsan` uses `setarch x86_64 -R` only for the test process. The fuzz script uses the same workaround after one pre-input Clang sanitizer startup failure. No system ASLR setting was changed, and successful instrumented runs do not suppress sanitizer findings.
 
@@ -143,7 +143,7 @@ sudo docker compose -f deploy/compose.yml ps
 curl --fail http://127.0.0.1:9100/healthz
 ```
 
-For bridge networking, mount an explicit config that binds `0.0.0.0` **and requires auth**, then publish the port. A default loopback listener inside a bridged container is not accessible through published ports. **Locally verified:** Docker Engine 29.8.2 built the image and passed all 41 integration tests in 27.32 seconds. Compose checks passed health, policy denial, SIGHUP reload, graceful shutdown, persistent logs and runtime restrictions. Reproduce with `scripts/check_docker.py` and `scripts/check_compose.py`; see [test evidence](bench/results/docker.json) and [Compose evidence](bench/results/docker-compose.json). The image reports 126.5 MB; Engine packages plus image/build storage occupy approximately 1.04 GB on the Linux ext4 filesystem ([measurements](bench/results/docker-storage.json)). These sizes include shared data only once and will change with future builds/logs. The checked-in [GitHub Actions workflow](.github/workflows/ci.yml) builds/tests release and sanitizer variants, checks static analysis/formatting, runs fuzz smoke tests and builds the container. Hosted CI has not been run or claimed green; this repository has not been pushed.
+For bridge networking, mount an explicit config that binds `0.0.0.0` **and requires auth**, then publish the port. A default loopback listener inside a bridged container is not accessible through published ports. **Locally verified on this branch:** all 46 proxy integration tests pass inside the container. The image reports 134.7 MB; see [test evidence](bench/results/docker.json). The earlier standalone Compose checks passed health, policy denial, SIGHUP reload, graceful shutdown, persistent logs and restrictions ([Compose evidence](bench/results/docker-compose.json)). Its historical 1.04 GB Docker footprint predates Kubernetes; current cluster storage is recorded [separately](bench/results/k8s/storage-final.txt). Reproduce with `scripts/check_docker.py` and `scripts/check_compose.py`. The checked-in [GitHub Actions workflow](.github/workflows/ci.yml) builds/tests release and sanitizer variants, checks static analysis/formatting, runs fuzz smoke tests and builds the container. Hosted CI has not been run or claimed green; this repository has not been pushed.
 
 ## SentinelAgent
 
@@ -161,3 +161,13 @@ The demonstration on **Ubuntu** passed an HTTPS request with a trusted local cer
 ## Scope
 
 No TLS interception, transparent interception, UDP/QUIC, proxy-side HTTP/2 negotiation, response cache, keepalive/pipelining for plain HTTP, WebSocket upgrade, splice optimization or seccomp filter. TLS metadata checks cannot inspect encrypted HTTP Host or DLP content. ECH/no-SNI reduces the domain-fronting guarantee to host/IP policy. Read [architecture.md](docs/architecture.md) for buffer bounds, rule order, conservative special-use IP handling, per-worker limits and DNS/shutdown details.
+
+## Kubernetes extension
+
+The `kubernetes` branch runs a **local three-node kind cluster on one Linux machine**, with a versioned policy service, Redis shared limits, Helm, Calico NetworkPolicies, HPA, Prometheus and Grafana. Redis and the policy service each have one instance. Follow the [setup and operating guide](docs/kubernetes.md); the original extension spec is in [docs/kubernetes-spec.md](docs/kubernetes-spec.md).
+
+All ten local cluster experiments passed. The [rolling-update experiment](bench/results/k8s/E5.json) reduced interrupted requests from **41 to 0** with readiness and draining. [Autoscaling](bench/results/k8s/E4.json) increased replicas **3 → 6 → 3**, and [bypass enforcement](bench/results/k8s/E8.json) blocked direct HTTPS while allowing authenticated proxied HTTPS. These are bounded local tests, not production availability guarantees.
+
+The branch has **21 C++ tests, 46 proxy integration tests and 5 control-plane tests**, verified in release, ASan/UBSan and TSan. The container runs the 46 proxy tests. [Full results and limitations](docs/kubernetes.md#recorded-results-9-october-2026) include every experiment, policy rollout timing, uneven scaling and Redis latency. High-rate benchmarks measure authenticated **403 policy decisions**, not upstream forwarding throughput. Hosted GitHub Actions is configured but has not run.
+
+![Live Grafana dashboard during the Kubernetes load test](bench/results/k8s/grafana.png)

@@ -1,0 +1,24 @@
+{
+  "targets": [
+    {
+      "pod": "zt-policy-5bcb8c86fb-l28f7",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pod": "zt-proxy-545c8fc48b-gzwxv",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pod": "zt-proxy-545c8fc48b-qnzbx",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pod": "zt-proxy-545c8fc48b-6cvph",
+      "health": "up",
+      "lastError": ""
+    }
+  ]
+}

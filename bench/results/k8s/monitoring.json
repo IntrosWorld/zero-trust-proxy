@@ -1,0 +1,47 @@
+{
+  "targets": [
+    {
+      "pod": "zt-policy-d9cb4cdb-t549z",
+      "health": "up",
+      "lastError": "",
+      "scrapeUrl": "http://10.244.229.173:8080/metrics"
+    },
+    {
+      "pod": "zt-proxy-77c5c5c8fb-kfs8v",
+      "health": "up",
+      "lastError": "",
+      "scrapeUrl": "http://10.244.229.174:9100/metrics"
+    },
+    {
+      "pod": "zt-proxy-77c5c5c8fb-lgvnj",
+      "health": "up",
+      "lastError": "",
+      "scrapeUrl": "http://10.244.18.230:9100/metrics"
+    },
+    {
+      "pod": "zt-proxy-77c5c5c8fb-dtldk",
+      "health": "up",
+      "lastError": "",
+      "scrapeUrl": "http://10.244.18.228:9100/metrics"
+    },
+    {
+      "pod": "zt-proxy-77c5c5c8fb-mz9jb",
+      "health": "up",
+      "lastError": "",
+      "scrapeUrl": "http://10.244.18.229:9100/metrics"
+    },
+    {
+      "pod": "zt-proxy-77c5c5c8fb-9ln8r",
+      "health": "up",
+      "lastError": "",
+      "scrapeUrl": "http://10.244.229.172:9100/metrics"
+    },
+    {
+      "pod": "zt-proxy-77c5c5c8fb-54c9k",
+      "health": "up",
+      "lastError": "",
+      "scrapeUrl": "http://10.244.229.171:9100/metrics"
+    }
+  ],
+  "verified": true
+}

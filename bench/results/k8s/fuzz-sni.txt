@@ -1,0 +1,35 @@
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2152612842
+INFO: Loaded 1 modules   (3807 inline 8-bit counters): 3807 [0x555555751530, 0x55555575240f), 
+INFO: Loaded 1 PC tables (3807 PCs): 3807 [0x555555752410,0x555555761200), 
+INFO:      188 files found in build/fuzz/corpus/sni
+INFO: seed corpus: files: 188 min: 1b max: 1046b total: 56566b rss: 32Mb
+#189	INITED cov: 435 ft: 1510 corp: 107/28Kb exec/s: 0 rss: 36Mb
+#65536	pulse  cov: 435 ft: 1510 corp: 107/28Kb lim: 1584 exec/s: 32768 rss: 84Mb
+#97200	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 1894 exec/s: 32400 rss: 107Mb L: 637/934 MS: 1 EraseBytes-
+#131072	pulse  cov: 435 ft: 1510 corp: 107/28Kb lim: 2230 exec/s: 32768 rss: 132Mb
+#170439	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 2615 exec/s: 34087 rss: 160Mb L: 465/934 MS: 4 ChangeByte-InsertByte-EraseBytes-ChangeBit-
+#203010	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 2934 exec/s: 33835 rss: 184Mb L: 300/934 MS: 1 EraseBytes-
+#231911	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 3220 exec/s: 33130 rss: 205Mb L: 43/934 MS: 1 EraseBytes-
+#261257	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 3506 exec/s: 32657 rss: 226Mb L: 41/934 MS: 1 EraseBytes-
+#262144	pulse  cov: 435 ft: 1510 corp: 107/28Kb lim: 3506 exec/s: 32768 rss: 227Mb
+#281719	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 3704 exec/s: 31302 rss: 241Mb L: 77/934 MS: 2 ChangeByte-EraseBytes-
+#340262	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 4280 exec/s: 30932 rss: 284Mb L: 71/934 MS: 2 CopyPart-EraseBytes-
+#380353	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 4676 exec/s: 31696 rss: 313Mb L: 819/934 MS: 1 EraseBytes-
+#524288	pulse  cov: 435 ft: 1510 corp: 107/28Kb lim: 6104 exec/s: 29127 rss: 404Mb
+#660330	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 7460 exec/s: 31444 rss: 409Mb L: 933/933 MS: 2 ChangeASCIIInt-EraseBytes-
+#662111	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 7472 exec/s: 31529 rss: 409Mb L: 464/933 MS: 1 EraseBytes-
+#662873	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 7472 exec/s: 31565 rss: 409Mb L: 441/933 MS: 2 InsertByte-EraseBytes-
+#807160	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 8907 exec/s: 33631 rss: 409Mb L: 353/933 MS: 1 EraseBytes-
+#819157	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 9024 exec/s: 34131 rss: 409Mb L: 440/933 MS: 2 CopyPart-EraseBytes-
+#822488	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 9050 exec/s: 32899 rss: 409Mb L: 485/933 MS: 1 EraseBytes-
+#1028621	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 11091 exec/s: 36736 rss: 409Mb L: 274/933 MS: 1 EraseBytes-
+#1048576	pulse  cov: 435 ft: 1510 corp: 107/28Kb lim: 11286 exec/s: 37449 rss: 409Mb
+#1128857	REDUCE cov: 435 ft: 1510 corp: 107/28Kb lim: 12079 exec/s: 37628 rss: 409Mb L: 128/933 MS: 1 EraseBytes-
+#1165987	DONE   cov: 435 ft: 1510 corp: 107/28Kb lim: 12443 exec/s: 37612 rss: 409Mb
+Done 1165987 runs in 31 second(s)
+stat::number_of_executed_units: 1165987
+stat::average_exec_per_sec:     37612
+stat::new_units_added:          16
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              409

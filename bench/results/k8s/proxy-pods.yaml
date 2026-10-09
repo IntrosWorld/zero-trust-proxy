@@ -1,0 +1,698 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: bce92b8b69077c404b54dad4af58eb53c14ac896a7ae367531b8fa2d3c192f3c
+      cni.projectcalico.org/containerID: 72a660d50827314f2d0cd4e95fa28483680293947a280d27b2e53d7e8837bf10
+      cni.projectcalico.org/podIP: 10.244.18.231/32
+      cni.projectcalico.org/podIPs: 10.244.18.231/32
+      experiment/image-update: "1791540463.4849625"
+      kubectl.kubernetes.io/restartedAt: "2026-10-09T15:42:11+05:30"
+    creationTimestamp: "2026-10-09T10:25:01Z"
+    generateName: zt-proxy-545c8fc48b-
+    generation: 1
+    labels:
+      app: zt-proxy
+      pod-template-hash: 545c8fc48b
+    name: zt-proxy-545c8fc48b-6cvph
+    namespace: zt-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: zt-proxy-545c8fc48b
+      uid: 7fea3af8-baa5-4096-9ad8-1e267f7b3517
+    resourceVersion: "10803"
+    uid: d73a902f-c2e8-44b3-a939-bcb5aa1971a2
+  spec:
+    automountServiceAccountToken: false
+    containers:
+    - args:
+      - --config
+      - /etc/zt-proxy/config.json
+      env:
+      - name: HOSTNAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      image: zt-proxy:kubernetes
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: proxy
+      ports:
+      - containerPort: 3128
+        name: proxy
+        protocol: TCP
+      - containerPort: 9100
+        name: admin
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 1
+        httpGet:
+          path: /readyz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: "1"
+          memory: 384Mi
+        requests:
+          cpu: 100m
+          memory: 96Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+      startupProbe:
+        failureThreshold: 30
+        httpGet:
+          path: /healthz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/zt-proxy
+        name: config
+        readOnly: true
+      - mountPath: /run/secrets
+        name: secrets
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: false
+    nodeName: zt-proxy-worker
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 10001
+      runAsGroup: 10001
+      runAsNonRoot: true
+      runAsUser: 10001
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 45
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    topologySpreadConstraints:
+    - labelSelector:
+        matchLabels:
+          app: zt-proxy
+      maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: zt-proxy-config
+      name: config
+    - name: secrets
+      secret:
+        defaultMode: 288
+        items:
+        - key: proxy-token
+          path: proxy-token
+        - key: policy-read-token
+          path: policy-read-token
+        - key: redis-password
+          path: redis-password
+        secretName: zt-secrets
+  status:
+    allocatedResources:
+      cpu: 100m
+      memory: 96Mi
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:25:01Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:25:01Z"
+      observedGeneration: 1
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:25:03Z"
+      observedGeneration: 1
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:25:03Z"
+      observedGeneration: 1
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:25:01Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: 100m
+        memory: 96Mi
+      containerID: containerd://c82d246869a4152488443e381a62a09a84254b3bbee7d5b5c17fac75ef77935f
+      image: docker.io/library/zt-proxy:kubernetes
+      imageID: docker.io/library/import-2026-10-09@sha256:058115b6ef0334709701404eb1e29e01c256bd39038046655a546c5fb8717cdf
+      lastState: {}
+      name: proxy
+      ready: true
+      resources:
+        limits:
+          cpu: "1"
+          memory: 384Mi
+        requests:
+          cpu: 100m
+          memory: 96Mi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2026-10-09T10:25:01Z"
+      user:
+        linux:
+          gid: 10001
+          supplementalGroups:
+          - 10001
+          uid: 10001
+      volumeMounts:
+      - mountPath: /etc/zt-proxy
+        name: config
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /run/secrets
+        name: secrets
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 172.18.0.3
+    hostIPs:
+    - ip: 172.18.0.3
+    observedGeneration: 1
+    phase: Running
+    podIP: 10.244.18.231
+    podIPs:
+    - ip: 10.244.18.231
+    qosClass: Burstable
+    resources:
+      limits:
+        cpu: "1"
+        memory: 384Mi
+      requests:
+        cpu: 79m
+        memory: 96Mi
+    startTime: "2026-10-09T10:25:01Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: bce92b8b69077c404b54dad4af58eb53c14ac896a7ae367531b8fa2d3c192f3c
+      cni.projectcalico.org/containerID: 098e3c105bff8ebe854bdbf1a1f590be20d12b2d3d16e14eacde4a2435aafaca
+      cni.projectcalico.org/podIP: 10.244.229.175/32
+      cni.projectcalico.org/podIPs: 10.244.229.175/32
+      experiment/image-update: "1791540463.4849625"
+      kubectl.kubernetes.io/restartedAt: "2026-10-09T15:42:11+05:30"
+    creationTimestamp: "2026-10-09T10:24:54Z"
+    generateName: zt-proxy-545c8fc48b-
+    generation: 1
+    labels:
+      app: zt-proxy
+      pod-template-hash: 545c8fc48b
+    name: zt-proxy-545c8fc48b-gzwxv
+    namespace: zt-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: zt-proxy-545c8fc48b
+      uid: 7fea3af8-baa5-4096-9ad8-1e267f7b3517
+    resourceVersion: "10682"
+    uid: c3ae35d0-8b3f-4b42-acc8-d2a7c4569b3c
+  spec:
+    automountServiceAccountToken: false
+    containers:
+    - args:
+      - --config
+      - /etc/zt-proxy/config.json
+      env:
+      - name: HOSTNAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      image: zt-proxy:kubernetes
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: proxy
+      ports:
+      - containerPort: 3128
+        name: proxy
+        protocol: TCP
+      - containerPort: 9100
+        name: admin
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 1
+        httpGet:
+          path: /readyz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: "1"
+          memory: 384Mi
+        requests:
+          cpu: 100m
+          memory: 96Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+      startupProbe:
+        failureThreshold: 30
+        httpGet:
+          path: /healthz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/zt-proxy
+        name: config
+        readOnly: true
+      - mountPath: /run/secrets
+        name: secrets
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: false
+    nodeName: zt-proxy-worker2
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 10001
+      runAsGroup: 10001
+      runAsNonRoot: true
+      runAsUser: 10001
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 45
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    topologySpreadConstraints:
+    - labelSelector:
+        matchLabels:
+          app: zt-proxy
+      maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: zt-proxy-config
+      name: config
+    - name: secrets
+      secret:
+        defaultMode: 288
+        items:
+        - key: proxy-token
+          path: proxy-token
+        - key: policy-read-token
+          path: policy-read-token
+        - key: redis-password
+          path: redis-password
+        secretName: zt-secrets
+  status:
+    allocatedResources:
+      cpu: 100m
+      memory: 96Mi
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:55Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:54Z"
+      observedGeneration: 1
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:56Z"
+      observedGeneration: 1
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:56Z"
+      observedGeneration: 1
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:54Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: 100m
+        memory: 96Mi
+      containerID: containerd://3d7936a924a1a1b7fd4b87190c880a7ea51492f82022640e64b039369a46a140
+      image: docker.io/library/zt-proxy:kubernetes
+      imageID: docker.io/library/import-2026-10-09@sha256:058115b6ef0334709701404eb1e29e01c256bd39038046655a546c5fb8717cdf
+      lastState: {}
+      name: proxy
+      ready: true
+      resources:
+        limits:
+          cpu: "1"
+          memory: 384Mi
+        requests:
+          cpu: 100m
+          memory: 96Mi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2026-10-09T10:24:55Z"
+      user:
+        linux:
+          gid: 10001
+          supplementalGroups:
+          - 10001
+          uid: 10001
+      volumeMounts:
+      - mountPath: /etc/zt-proxy
+        name: config
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /run/secrets
+        name: secrets
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 172.18.0.4
+    hostIPs:
+    - ip: 172.18.0.4
+    observedGeneration: 1
+    phase: Running
+    podIP: 10.244.229.175
+    podIPs:
+    - ip: 10.244.229.175
+    qosClass: Burstable
+    resources:
+      limits:
+        cpu: "1"
+        memory: 384Mi
+      requests:
+        cpu: 79m
+        memory: 96Mi
+    startTime: "2026-10-09T10:24:54Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: bce92b8b69077c404b54dad4af58eb53c14ac896a7ae367531b8fa2d3c192f3c
+      cni.projectcalico.org/containerID: ae7bab8b71c51a420f8d5a757b0d1a676af2549d9a3c5a1374274d6a52b10d29
+      cni.projectcalico.org/podIP: 10.244.229.177/32
+      cni.projectcalico.org/podIPs: 10.244.229.177/32
+      experiment/image-update: "1791540463.4849625"
+      kubectl.kubernetes.io/restartedAt: "2026-10-09T15:42:11+05:30"
+    creationTimestamp: "2026-10-09T10:24:58Z"
+    generateName: zt-proxy-545c8fc48b-
+    generation: 1
+    labels:
+      app: zt-proxy
+      pod-template-hash: 545c8fc48b
+    name: zt-proxy-545c8fc48b-qnzbx
+    namespace: zt-system
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: zt-proxy-545c8fc48b
+      uid: 7fea3af8-baa5-4096-9ad8-1e267f7b3517
+    resourceVersion: "10746"
+    uid: b2023b62-fb19-4737-a757-6d77f58a1453
+  spec:
+    automountServiceAccountToken: false
+    containers:
+    - args:
+      - --config
+      - /etc/zt-proxy/config.json
+      env:
+      - name: HOSTNAME
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      image: zt-proxy:kubernetes
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: proxy
+      ports:
+      - containerPort: 3128
+        name: proxy
+        protocol: TCP
+      - containerPort: 9100
+        name: admin
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 1
+        httpGet:
+          path: /readyz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        limits:
+          cpu: "1"
+          memory: 384Mi
+        requests:
+          cpu: 100m
+          memory: 96Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+      startupProbe:
+        failureThreshold: 30
+        httpGet:
+          path: /healthz
+          port: admin
+          scheme: HTTP
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/zt-proxy
+        name: config
+        readOnly: true
+      - mountPath: /run/secrets
+        name: secrets
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: false
+    nodeName: zt-proxy-worker2
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 10001
+      runAsGroup: 10001
+      runAsNonRoot: true
+      runAsUser: 10001
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 45
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    topologySpreadConstraints:
+    - labelSelector:
+        matchLabels:
+          app: zt-proxy
+      maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: zt-proxy-config
+      name: config
+    - name: secrets
+      secret:
+        defaultMode: 288
+        items:
+        - key: proxy-token
+          path: proxy-token
+        - key: policy-read-token
+          path: policy-read-token
+        - key: redis-password
+          path: redis-password
+        secretName: zt-secrets
+  status:
+    allocatedResources:
+      cpu: 100m
+      memory: 96Mi
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:58Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:58Z"
+      observedGeneration: 1
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:59Z"
+      observedGeneration: 1
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:59Z"
+      observedGeneration: 1
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2026-10-09T10:24:58Z"
+      observedGeneration: 1
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - allocatedResources:
+        cpu: 100m
+        memory: 96Mi
+      containerID: containerd://733ed277e5f6c94b9be1e7ee80e4fe34a09eb8cd813c2e3a0861e59c9ef9d92c
+      image: docker.io/library/zt-proxy:kubernetes
+      imageID: docker.io/library/import-2026-10-09@sha256:058115b6ef0334709701404eb1e29e01c256bd39038046655a546c5fb8717cdf
+      lastState: {}
+      name: proxy
+      ready: true
+      resources:
+        limits:
+          cpu: "1"
+          memory: 384Mi
+        requests:
+          cpu: 100m
+          memory: 96Mi
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2026-10-09T10:24:58Z"
+      user:
+        linux:
+          gid: 10001
+          supplementalGroups:
+          - 10001
+          uid: 10001
+      volumeMounts:
+      - mountPath: /etc/zt-proxy
+        name: config
+        readOnly: true
+        recursiveReadOnly: Disabled
+      - mountPath: /run/secrets
+        name: secrets
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 172.18.0.4
+    hostIPs:
+    - ip: 172.18.0.4
+    observedGeneration: 1
+    phase: Running
+    podIP: 10.244.229.177
+    podIPs:
+    - ip: 10.244.229.177
+    qosClass: Burstable
+    resources:
+      limits:
+        cpu: "1"
+        memory: 384Mi
+      requests:
+        cpu: 79m
+        memory: 96Mi
+    startTime: "2026-10-09T10:24:58Z"
+kind: List
+metadata:
+  resourceVersion: ""

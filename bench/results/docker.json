@@ -1,13 +1,13 @@
 {
-  "timestamp": 1791540493.817004,
-  "image": "zt-proxy:kubernetes-next",
+  "timestamp": 1791541502.8267407,
+  "image": "zt-proxy:kubernetes",
   "tests_passed": true,
-  "image_id": "sha256:4ab9919b708c950dfdb36241669e5038eae4c557e67ace38686b75294edded69",
-  "image_size_bytes": 134741587,
+  "image_id": "sha256:98bd0a8ae223a85e7fb65292bd301272a3849cb158df2c2404c1ab64e72c0abe",
+  "image_size_bytes": 134736875,
   "runtime_user": "10001:10001",
   "proxy_version": "zt-proxy 1.0.0",
   "integration_exit_code": 0,
-  "integration_output": "..............................................                           [100%]\n46 passed in 36.39s\n",
+  "integration_output": "..............................................                           [100%]\n46 passed in 33.91s\n",
   "docker_version": "{\"Client\":{\"Platform\":{\"Name\":\"Docker Engine - Community\"},\"Version\":\"29.8.2\",\"ApiVersion\":\"1.56\",\"DefaultAPIVersion\":\"1.56\",\"GitCommit\":\"7fc2dff\",\"GoVersion\":\"go1.26.8\",\"Os\":\"linux\",\"Arch\":\"amd64\",\"BuildTime\":\"Wed Sep 30 19:32:31 2026\",\"Context\":\"default\"},\"Server\":{\"Platform\":{\"Name\":\"Docker Engine - Community\"},\"Version\":\"29.8.2\",\"ApiVersion\":\"1.56\",\"MinAPIVersion\":\"1.40\",\"Os\":\"linux\",\"Arch\":\"amd64\",\"Components\":[{\"Name\":\"Engine\",\"Version\":\"29.8.2\",\"Details\":{\"ApiVersion\":\"1.56\",\"Arch\":\"amd64\",\"BuildTime\":\"Wed Sep 30 19:32:31 2026\",\"Experimental\":\"false\",\"GitCommit\":\"8af9fe3\",\"GoVersion\":\"go1.26.8\",\"KernelVersion\":\"6.8.0-138-generic\",\"MinAPIVersion\":\"1.40\",\"Module\":\"github.com/moby/moby/v2\",\"ModuleVersion\":\"v2.0.0+unknown\",\"Os\":\"linux\"}},{\"Name\":\"containerd\",\"Version\":\"v2.3.6\",\"Details\":{\"GitCommit\":\"ee2735368117d2eb259779949d5e75cdafec9761\"}},{\"Name\":\"runc\",\"Version\":\"1.5.1\",\"Details\":{\"GitCommit\":\"v1.5.1-0-g8f2685a4\"}},{\"Name\":\"docker-init\",\"Version\":\"0.19.0\",\"Details\":{\"GitCommit\":\"de40ad0\"}}],\"GitCommit\":\"8af9fe3\",\"GoVersion\":\"go1.26.8\",\"KernelVersion\":\"6.8.0-138-generic\",\"BuildTime\":\"2026-09-30T19:32:31.000000000+00:00\"}}",
   "storage": "/var/lib/docker"
 }

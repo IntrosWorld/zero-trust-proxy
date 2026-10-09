@@ -1,6 +1,6 @@
 # Docker on Linux
 
-This deployment was verified locally with Docker Engine 29.8.2: all 41 integration tests and the Compose lifecycle checks pass. The measured footprint is about 1.04 GB including Engine packages, images and build cache; the runtime image reports 126.5 MB. See [storage evidence](../bench/results/docker-storage.json).
+The Kubernetes branch image passes all **46 proxy integration tests** with Docker Engine 29.8.2 and reports 134.7 MB ([current evidence](../bench/results/docker.json)). The original standalone Compose lifecycle checks passed; its roughly 1.04 GB footprint and 126.5 MB image are historical [baseline measurements](../bench/results/docker-storage.json), before the cluster extension. For kind, Helm and the current larger storage footprint, see the [Kubernetes guide](../docs/kubernetes.md).
 
 Install [Docker Engine and the Compose plugin](https://docs.docker.com/engine/install/ubuntu/). Docker stores images and build cache on the Linux filesystem by default; copying this repository to another drive does not copy those images.
 
