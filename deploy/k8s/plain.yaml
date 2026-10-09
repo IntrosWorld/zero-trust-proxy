@@ -1,0 +1,273 @@
+---
+# Source: zt-proxy/templates/proxy.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: zt-proxy}
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels: {app: zt-proxy}
+
+---
+# Source: zt-proxy/templates/control.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata: {name: zt-policy-config}
+data:
+  policy.json: "{\"allowed_ports\":[80,443],\"allowlist\":[\"example.com\",\"*.example.com\"],\"burst\":200,\"denylist\":[],\"http_allowlist\":[],\"rate\":100}"
+
+---
+# Source: zt-proxy/templates/proxy.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zt-proxy-config
+data:
+  config.json: "{\"admin\":\"0.0.0.0\",\"admin_allow_remote\":true,\"admin_port\":9100,\"allowed_ports\":[80,443],\"allowlist\":[],\"burst\":200,\"denylist\":[],\"drain_timeout_ms\":10000,\"http_allowlist\":[],\"listen\":\"0.0.0.0\",\"log_path\":\"stdout\",\"max_connections\":512,\"max_per_client\":256,\"policy_poll_ms\":200,\"policy_token_file\":\"/run/secrets/policy-read-token\",\"policy_url\":\"http://zt-policy:8080\",\"policy_wait_seconds\":30,\"port\":3128,\"rate\":100,\"redis_fail_closed\":false,\"redis_host\":\"redis\",\"redis_password_file\":\"/run/secrets/redis-password\",\"redis_port\":6379,\"redis_threads\":2,\"redis_timeout_ms\":200,\"require_auth\":true,\"resolver_threads\":2,\"shutdown_delay_ms\":3000,\"tokens_file\":\"/run/secrets/proxy-token\",\"workers\":2}"
+
+---
+# Source: zt-proxy/templates/control.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: {name: zt-policy-data}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 256Mi
+
+---
+# Source: zt-proxy/templates/control.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: zt-policy
+  labels: {app: zt-policy}
+spec:
+  selector: {app: zt-policy}
+  ports: [{name: http, port: 8080, targetPort: http}]
+
+---
+# Source: zt-proxy/templates/proxy.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: zt-proxy
+  labels: {app: zt-proxy}
+spec:
+  selector: {app: zt-proxy}
+  ports:
+    - {name: proxy, port: 3128, targetPort: proxy}
+    - {name: admin, port: 9100, targetPort: admin}
+
+---
+# Source: zt-proxy/templates/redis.yaml
+apiVersion: v1
+kind: Service
+metadata: {name: redis}
+spec:
+  selector: {app: redis}
+  ports: [{name: redis, port: 6379, targetPort: redis}]
+
+---
+# Source: zt-proxy/templates/control.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: zt-policy}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: zt-policy}
+  template:
+    metadata:
+      labels: {app: zt-policy}
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: policy
+          image: "zt-policy:kubernetes"
+          imagePullPolicy: IfNotPresent
+          ports: [{name: http, containerPort: 8080}]
+          env:
+            - {name: ZT_POLICY_BIND, value: '0.0.0.0'}
+            - {name: ZT_POLICY_ADMIN_TOKEN_FILE, value: /run/secrets/policy-admin-token}
+            - {name: ZT_POLICY_READ_TOKEN_FILE, value: /run/secrets/policy-read-token}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 50m, memory: 48Mi}
+            limits: {cpu: '1', memory: 256Mi}
+          readinessProbe:
+            httpGet: {path: /healthz, port: http}
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: tmp, mountPath: /tmp}
+            - {name: config, mountPath: /etc/zt-policy, readOnly: true}
+            - {name: secrets, mountPath: /run/secrets, readOnly: true}
+      volumes:
+        - name: data
+          persistentVolumeClaim: {claimName: zt-policy-data}
+        - name: tmp
+          emptyDir: {sizeLimit: 16Mi}
+        - name: config
+          configMap: {name: zt-policy-config}
+        - name: secrets
+          secret:
+            secretName: zt-secrets
+            defaultMode: 0440
+            items:
+              - {key: policy-admin-token, path: policy-admin-token}
+              - {key: policy-read-token, path: policy-read-token}
+
+---
+# Source: zt-proxy/templates/proxy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zt-proxy
+spec:
+  replicas: 3
+  minReadySeconds: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxUnavailable: 0, maxSurge: 1}
+  selector:
+    matchLabels: {app: zt-proxy}
+  template:
+    metadata:
+      labels: {app: zt-proxy}
+      annotations:
+        checksum/config: bce92b8b69077c404b54dad4af58eb53c14ac896a7ae367531b8fa2d3c192f3c
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 45
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels: {app: zt-proxy}
+      containers:
+        - name: proxy
+          image: "zt-proxy:kubernetes"
+          imagePullPolicy: IfNotPresent
+          args: [--config, /etc/zt-proxy/config.json]
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef: {fieldPath: metadata.name}
+          ports:
+            - {name: proxy, containerPort: 3128}
+            - {name: admin, containerPort: 9100}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources: {"limits":{"cpu":"1","memory":"384Mi"},"requests":{"cpu":"100m","memory":"96Mi"}}
+          startupProbe:
+            httpGet: {path: /healthz, port: admin}
+            periodSeconds: 1
+            failureThreshold: 30
+          livenessProbe:
+            httpGet: {path: /healthz, port: admin}
+            periodSeconds: 5
+          readinessProbe:
+            httpGet: {path: /readyz, port: admin}
+            periodSeconds: 1
+            failureThreshold: 1
+          volumeMounts:
+            - {name: config, mountPath: /etc/zt-proxy, readOnly: true}
+            - {name: secrets, mountPath: /run/secrets, readOnly: true}
+      volumes:
+        - name: config
+          configMap: {name: zt-proxy-config}
+        - name: secrets
+          secret:
+            secretName: zt-secrets
+            defaultMode: 0440
+            items:
+              - {key: proxy-token, path: proxy-token}
+              - {key: policy-read-token, path: policy-read-token}
+              - {key: redis-password, path: redis-password}
+
+---
+# Source: zt-proxy/templates/redis.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: redis}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: redis}
+  template:
+    metadata:
+      labels: {app: redis}
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: redis
+          image: "redis:7.4-alpine"
+          command: [sh, -ec]
+          args:
+            - |
+              umask 077
+              cat > /data/redis.conf <<'CONFIG'
+              bind 0.0.0.0
+              port 6379
+              save ""
+              appendonly no
+              maxmemory 96mb
+              maxmemory-policy noeviction
+              CONFIG
+              printf 'requirepass %s\n' "$(cat /run/secrets/redis-password)" >> /data/redis.conf
+              exec redis-server /data/redis.conf
+          ports: [{name: redis, containerPort: 6379}]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 50m, memory: 32Mi}
+            limits: {cpu: '1', memory: 128Mi}
+          readinessProbe:
+            tcpSocket: {port: redis}
+          livenessProbe:
+            tcpSocket: {port: redis}
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: secrets, mountPath: /run/secrets, readOnly: true}
+      volumes:
+        - name: data
+          emptyDir: {sizeLimit: 16Mi}
+        - name: secrets
+          secret:
+            secretName: zt-secrets
+            defaultMode: 0440
+            items: [{key: redis-password, path: redis-password}]

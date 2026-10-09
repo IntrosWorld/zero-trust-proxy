@@ -1,0 +1,69 @@
+replicaCount: 3
+image: zt-proxy:kubernetes
+imagePullPolicy: IfNotPresent
+existingSecret: zt-secrets
+appsNamespace: apps
+monitoringNamespace: monitoring
+resources:
+  requests: {cpu: 100m, memory: 96Mi}
+  limits: {cpu: '1', memory: 384Mi}
+config:
+  listen: 0.0.0.0
+  port: 3128
+  admin: 0.0.0.0
+  admin_port: 9100
+  admin_allow_remote: true
+  workers: 2
+  resolver_threads: 2
+  require_auth: true
+  tokens_file: /run/secrets/proxy-token
+  allowlist: []
+  denylist: []
+  http_allowlist: []
+  allowed_ports: [80, 443]
+  policy_url: http://zt-policy:8080
+  policy_token_file: /run/secrets/policy-read-token
+  policy_poll_ms: 200
+  policy_wait_seconds: 30
+  redis_host: redis
+  redis_port: 6379
+  redis_password_file: /run/secrets/redis-password
+  redis_timeout_ms: 200
+  redis_threads: 2
+  redis_fail_closed: false
+  rate: 100
+  burst: 200
+  max_connections: 512
+  max_per_client: 256
+  shutdown_delay_ms: 3000
+  drain_timeout_ms: 10000
+  log_path: stdout
+terminationGracePeriodSeconds: 45
+readinessEnabled: true
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 6
+  targetCPU: 60
+  scaleDownWindow: 60
+pdb:
+  enabled: true
+  minAvailable: 2
+control:
+  image: zt-policy:kubernetes
+  storage: 256Mi
+  bootstrap:
+    allowlist: [example.com, '*.example.com']
+    denylist: []
+    http_allowlist: []
+    allowed_ports: [80, 443]
+    rate: 100
+    burst: 200
+redis:
+  image: redis:7.4-alpine
+monitoring:
+  enabled: false
+  release: monitoring
+networkPolicy:
+  enabled: true
+  apiServerCIDRs: [10.96.0.1/32, 172.18.0.0/16]

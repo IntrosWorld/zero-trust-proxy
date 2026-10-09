@@ -1,6 +1,8 @@
 #include "policy/redis_limiter.h"
 #include "control/transport.h"
 #include "policy/resp.h"
+#include <iomanip>
+#include <sstream>
 #include <unistd.h>
 namespace zt {
 // Redis TIME supplies one clock for every replica; the script is one atomic transaction.
@@ -12,11 +14,13 @@ local now=tonumber(nowparts[1])+tonumber(nowparts[2])/1000000
 local old=redis.call('HMGET',KEYS[1],'tokens','time')
 local tokens=tonumber(old[1]) or burst
 local last=tonumber(old[2]) or now
+now=math.max(now,last)
 tokens=math.min(burst,tokens+math.max(0,now-last)*rate)
 local allowed=0
 if tokens>=1 then tokens=tokens-1; allowed=1 end
 redis.call('HSET',KEYS[1],'tokens',tokens,'time',now)
-redis.call('PEXPIRE',KEYS[1],math.max(600000,math.ceil(burst/rate*1000)))
+local ttl=math.max(600000,math.ceil(burst/rate*1000))
+if ttl<9007199254740000 then redis.call('PEXPIRE',KEYS[1],ttl) else redis.call('PERSIST',KEYS[1]) end
 return allowed
 )lua";
 RedisLimiter::RedisLimiter(int threads, Metrics &metrics) : metrics_(metrics) {
@@ -101,12 +105,17 @@ void RedisLimiter::run() {
       };
       if (sha.empty())
         load();
+      auto decimal = [](double v) {
+        std::ostringstream out;
+        out << std::setprecision(17) << v;
+        return out.str();
+      };
       auto args = std::vector<std::string>{"EVALSHA",
                                            sha,
                                            "1",
                                            "zt:bucket:" + job.identity,
-                                           std::to_string(job.config->rate),
-                                           std::to_string(job.config->burst)};
+                                           decimal(job.config->rate),
+                                           decimal(job.config->burst)};
       auto response = call(args);
       if (response.type == '-' && response.text.starts_with("NOSCRIPT")) {
         load();

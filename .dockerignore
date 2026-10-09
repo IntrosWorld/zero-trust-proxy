@@ -9,3 +9,11 @@
 !deploy/
 !deploy/Dockerfile
 !deploy/healthcheck.sh
+!control-plane/
+!control-plane/server.py
+!control-plane/Dockerfile
+!bench/
+!bench/k8s/
+!bench/k8s/client.py
+!bench/k8s/Dockerfile
+!bench/k8s/wrk.lua

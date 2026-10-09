@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zt-proxy
+description: Local distributed zero trust forward proxy
+version: 0.1.0
+appVersion: 1.1.0
+type: application

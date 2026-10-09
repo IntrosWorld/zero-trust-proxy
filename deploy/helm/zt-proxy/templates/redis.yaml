@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: redis}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: redis}
+  template:
+    metadata:
+      labels: {app: redis}
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: redis
+          image: {{ .Values.redis.image | quote }}
+          command: [sh, -ec]
+          args:
+            - |
+              umask 077
+              cat > /data/redis.conf <<'CONFIG'
+              bind 0.0.0.0
+              port 6379
+              save ""
+              appendonly no
+              maxmemory 96mb
+              maxmemory-policy noeviction
+              CONFIG
+              printf 'requirepass %s\n' "$(cat /run/secrets/redis-password)" >> /data/redis.conf
+              exec redis-server /data/redis.conf
+          ports: [{name: redis, containerPort: 6379}]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 50m, memory: 32Mi}
+            limits: {cpu: '1', memory: 128Mi}
+          readinessProbe:
+            tcpSocket: {port: redis}
+          livenessProbe:
+            tcpSocket: {port: redis}
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: secrets, mountPath: /run/secrets, readOnly: true}
+      volumes:
+        - name: data
+          emptyDir: {sizeLimit: 16Mi}
+        - name: secrets
+          secret:
+            secretName: {{ .Values.existingSecret }}
+            defaultMode: 0440
+            items: [{key: redis-password, path: redis-password}]
+---
+apiVersion: v1
+kind: Service
+metadata: {name: redis}
+spec:
+  selector: {app: redis}
+  ports: [{name: redis, port: 6379, targetPort: redis}]

@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zt-client
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zt-client
+  template:
+    metadata:
+      labels:
+        app: zt-client
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: client
+        image: zt-client:kubernetes
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: '2'
+            memory: 256Mi
+        volumeMounts:
+        - name: secrets
+          mountPath: /run/secrets
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: secrets
+        secret:
+          secretName: zt-secrets
+          defaultMode: 288
+          items:
+          - key: proxy-token
+            path: proxy-token
+      - name: tmp
+        emptyDir:
+          sizeLimit: 32Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zt-admin
+  namespace: zt-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zt-admin
+  template:
+    metadata:
+      labels:
+        app: zt-admin
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: client
+        image: zt-client:kubernetes
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: '2'
+            memory: 256Mi
+        volumeMounts:
+        - name: secrets
+          mountPath: /run/secrets
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: secrets
+        secret:
+          secretName: zt-secrets
+          defaultMode: 288
+          items:
+          - key: proxy-token
+            path: proxy-token
+          - key: policy-read-token
+            path: policy-read-token
+          - key: policy-admin-token
+            path: policy-admin-token
+      - name: tmp
+        emptyDir:
+          sizeLimit: 32Mi

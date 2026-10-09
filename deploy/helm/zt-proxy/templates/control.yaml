@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: {name: zt-policy-config}
+data:
+  policy.json: {{ .Values.control.bootstrap | toJson | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: {name: zt-policy-data}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: {{ .Values.control.storage }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: zt-policy}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: zt-policy}
+  template:
+    metadata:
+      labels: {app: zt-policy}
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: policy
+          image: {{ .Values.control.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports: [{name: http, containerPort: 8080}]
+          env:
+            - {name: ZT_POLICY_BIND, value: '0.0.0.0'}
+            - {name: ZT_POLICY_ADMIN_TOKEN_FILE, value: /run/secrets/policy-admin-token}
+            - {name: ZT_POLICY_READ_TOKEN_FILE, value: /run/secrets/policy-read-token}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 50m, memory: 48Mi}
+            limits: {cpu: '1', memory: 256Mi}
+          readinessProbe:
+            httpGet: {path: /healthz, port: http}
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: tmp, mountPath: /tmp}
+            - {name: config, mountPath: /etc/zt-policy, readOnly: true}
+            - {name: secrets, mountPath: /run/secrets, readOnly: true}
+      volumes:
+        - name: data
+          persistentVolumeClaim: {claimName: zt-policy-data}
+        - name: tmp
+          emptyDir: {sizeLimit: 16Mi}
+        - name: config
+          configMap: {name: zt-policy-config}
+        - name: secrets
+          secret:
+            secretName: {{ .Values.existingSecret }}
+            defaultMode: 0440
+            items:
+              - {key: policy-admin-token, path: policy-admin-token}
+              - {key: policy-read-token, path: policy-read-token}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zt-policy
+  labels: {app: zt-policy}
+spec:
+  selector: {app: zt-policy}
+  ports: [{name: http, port: 8080, targetPort: http}]

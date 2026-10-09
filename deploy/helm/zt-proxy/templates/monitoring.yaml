@@ -1,0 +1,45 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: zt-proxy
+  labels:
+    release: {{ .Values.monitoring.release }}
+spec:
+  selector:
+    matchLabels: {app: zt-proxy}
+  endpoints:
+    - {port: admin, path: /metrics, interval: 5s}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: zt-policy
+  labels:
+    release: {{ .Values.monitoring.release }}
+spec:
+  selector:
+    matchLabels: {app: zt-policy}
+  endpoints:
+    - {port: http, path: /metrics, interval: 5s}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: zt-proxy
+  labels:
+    release: {{ .Values.monitoring.release }}
+spec:
+  groups:
+    - name: zt-proxy
+      rules:
+        - alert: ProxyDown
+          expr: up{service="zt-proxy"} == 0
+          for: 30s
+        - alert: PolicyVersionSkew
+          expr: max(zt_policy_version) - min(zt_policy_version) > 0
+          for: 60s
+        - alert: RedisUnavailable
+          expr: increase(zt_redis_errors_total[1m]) > 0
+          for: 30s
+{{- end }}

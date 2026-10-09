@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zt-proxy-config
+data:
+  config.json: {{ .Values.config | toJson | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zt-proxy
+spec:
+  {{- if not .Values.hpa.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  minReadySeconds: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxUnavailable: 0, maxSurge: 1}
+  selector:
+    matchLabels: {app: zt-proxy}
+  template:
+    metadata:
+      labels: {app: zt-proxy}
+      annotations:
+        checksum/config: {{ .Values.config | toJson | sha256sum }}
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels: {app: zt-proxy}
+      containers:
+        - name: proxy
+          image: {{ .Values.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args: [--config, /etc/zt-proxy/config.json]
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef: {fieldPath: metadata.name}
+          ports:
+            - {name: proxy, containerPort: 3128}
+            - {name: admin, containerPort: 9100}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources: {{ .Values.resources | toJson }}
+          startupProbe:
+            httpGet: {path: /healthz, port: admin}
+            periodSeconds: 1
+            failureThreshold: 30
+          livenessProbe:
+            httpGet: {path: /healthz, port: admin}
+            periodSeconds: 5
+          {{- if .Values.readinessEnabled }}
+          readinessProbe:
+            httpGet: {path: /readyz, port: admin}
+            periodSeconds: 1
+            failureThreshold: 1
+          {{- end }}
+          volumeMounts:
+            - {name: config, mountPath: /etc/zt-proxy, readOnly: true}
+            - {name: secrets, mountPath: /run/secrets, readOnly: true}
+      volumes:
+        - name: config
+          configMap: {name: zt-proxy-config}
+        - name: secrets
+          secret:
+            secretName: {{ .Values.existingSecret }}
+            defaultMode: 0440
+            items:
+              - {key: proxy-token, path: proxy-token}
+              - {key: policy-read-token, path: policy-read-token}
+              - {key: redis-password, path: redis-password}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zt-proxy
+  labels: {app: zt-proxy}
+spec:
+  selector: {app: zt-proxy}
+  ports:
+    - {name: proxy, port: 3128, targetPort: proxy}
+    - {name: admin, port: 9100, targetPort: admin}
+{{- if .Values.pdb.enabled }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: zt-proxy}
+spec:
+  minAvailable: {{ .Values.pdb.minAvailable }}
+  selector:
+    matchLabels: {app: zt-proxy}
+{{- end }}
+{{- if .Values.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {name: zt-proxy}
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: zt-proxy}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: {type: Utilization, averageUtilization: {{ .Values.hpa.targetCPU }}}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.hpa.scaleDownWindow }}
+{{- end }}
